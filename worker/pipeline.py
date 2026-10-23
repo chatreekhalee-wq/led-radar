@@ -12,6 +12,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import time
 import traceback
 from datetime import date, datetime, timezone
 from pathlib import Path
@@ -130,6 +131,7 @@ def step_location(db: DB, assets: list[dict]) -> dict[str, dict]:
     # ทรัพย์ในตำบลเดียวกันที่พิกัดระดับตำบลซ้ำกัน ใช้ผลเดียวกันได้ (ลดการเรียก Overpass)
     by_point = {(round(l["lat"], 5), round(l["lng"], 5)): l for l in locs.values() if l.get("lat") is not None}
     budget = CFG["location"]["max_new_per_run"]
+    deadline = time.time() + CFG["location"].get("max_minutes", 12) * 60   # งบเวลา ไม่ให้งานหมดเวลาก่อนคิดคะแนน
     for a in sorted(assets, key=lambda x: x.get("first_seen") or "", reverse=True):
         if a.get("lat") is None or a.get("status") != "active":
             continue
@@ -140,7 +142,7 @@ def step_location(db: DB, assets: list[dict]) -> dict[str, dict]:
         if key in by_point:
             feat = {k: v for k, v in by_point[key].items() if k not in ("asset_id", "computed_at")}
         else:
-            if budget <= 0:
+            if budget <= 0 or time.time() > deadline:
                 continue
             budget -= 1
             try:
@@ -216,4 +218,6 @@ def main(argv=None):
 
 
 if __name__ == "__main__":
+    import functools, builtins
+    builtins.print = functools.partial(builtins.print, flush=True)
     main()

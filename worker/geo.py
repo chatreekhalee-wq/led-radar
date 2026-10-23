@@ -56,19 +56,20 @@ def nominatim(q: str) -> tuple[float, float] | None:
 
 
 OVERPASS_Q = """
-[out:json][timeout:60];
+[out:json][timeout:45];
+way(around:3000,{lat},{lng})[highway~"^(motorway|trunk|primary|secondary)$"];
+out geom qt;
 (
-  way(around:3000,{lat},{lng})[highway~"^(motorway|trunk|primary|secondary)$"];
   nwr(around:10000,{lat},{lng})[amenity=hospital];
   nwr(around:5000,{lat},{lng})[amenity~"^(school|college|university)$"];
   nwr(around:6000,{lat},{lng})[amenity=marketplace];
   nwr(around:6000,{lat},{lng})[shop~"^(supermarket|mall|department_store)$"];
   nwr(around:12000,{lat},{lng})[railway~"^(station|halt)$"];
-  nwr(around:12000,{lat},{lng})[public_transport=station];
   nwr(around:20000,{lat},{lng})[landuse=industrial];
-  nwr(around:2000,{lat},{lng})[amenity];
 );
-out geom qt;
+out center qt;
+nwr(around:2000,{lat},{lng})[amenity];
+out count;
 way(around:1000,{lat},{lng})[building];
 out count;
 """
@@ -102,9 +103,15 @@ def location_features(lat: float, lng: float, elements: list[dict]) -> dict:
         if best[key] is None or d < best[key]:
             best[key] = d
 
+    counts = [e for e in elements if e.get("type") == "count"]
+    if len(counts) >= 2:                       # ลำดับใน query: amenity ก่อน แล้ว building
+        n_amenity = int(counts[0].get("tags", {}).get("total", 0) or 0)
+        n_building = int(counts[1].get("tags", {}).get("ways", 0) or counts[1].get("tags", {}).get("total", 0) or 0)
+    elif counts:
+        n_building = int(counts[0].get("tags", {}).get("ways", 0) or counts[0].get("tags", {}).get("total", 0) or 0)
+    have_amenity_count = len(counts) >= 2
     for e in elements:
         if e.get("type") == "count":
-            n_building = int(e.get("tags", {}).get("ways", 0) or e.get("tags", {}).get("total", 0))
             continue
         tags = e.get("tags", {})
         pts = _elem_points(e)
@@ -124,7 +131,7 @@ def location_features(lat: float, lng: float, elements: list[dict]) -> dict:
             upd("d_rail_m", d)
         if tags.get("landuse") == "industrial":
             upd("d_industrial_m", d)
-        if am and d <= 2000:
+        if am and d <= 2000 and not have_amenity_count:
             n_amenity += 1
     out = {k: (round(v) if v is not None else None) for k, v in best.items()}
     out["n_amenity_2km"] = n_amenity
@@ -134,10 +141,10 @@ def location_features(lat: float, lng: float, elements: list[dict]) -> dict:
 
 def overpass(lat: float, lng: float) -> list[dict]:
     q = OVERPASS_Q.format(lat=lat, lng=lng)
-    for attempt in range(3):
-        r = requests.post(OVERPASS, data={"data": q}, headers={"User-Agent": UA}, timeout=120)
+    for attempt in range(2):
+        r = requests.post(OVERPASS, data={"data": q}, headers={"User-Agent": UA}, timeout=60)
         if r.status_code in (429, 504):
-            time.sleep(20 * (attempt + 1))
+            time.sleep(10 * (attempt + 1))
             continue
         r.raise_for_status()
         return r.json().get("elements", [])
