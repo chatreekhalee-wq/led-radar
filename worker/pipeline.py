@@ -175,6 +175,8 @@ def main(argv=None):
     # สถานะ
     for a in assets:
         st = asset_status(rounds.get(a["id"], []), today)
+        if st == "active" and (a.get("raw") or {}).get("_struck"):
+            st = "ended"          # แถวสีแดงในหน้าผลค้นหา = ขายแล้ว/งด/ถอน
         if st != a.get("status"):
             a["status"] = st
             db.update("assets", {"id": a["id"]}, {"status": st})

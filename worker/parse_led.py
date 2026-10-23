@@ -24,7 +24,9 @@ HEADER_MAP: list[tuple[str, str]] = [
     (r"ราคาประเมิน|ราคาเจ้าพนักงาน|ราคาที่กำหนด", "appraisal_price"),
     (r"หลักประกัน", "deposit"),
     (r"หมายเลขคดี|คดีหมายเลข|เลขคดี|คดีแดง", "case_no"),
-    (r"ลำดับที่|ล็อต|ล๊อต|ชุดที่|ลำดับ", "lot_no"),
+    (r"ลำดับที่การขาย|ลำดับการขาย|ลำดับที่ขาย", "lot_no"),   # เลขที่ใช้ระบุรายการขาย (เช่น 16 - 1)
+    (r"ล็อต|ล๊อต|ชุดที่", "lot_set"),
+    (r"^ลำดับ(?:ที่)?$", "row_no"),
     (r"ประเภททรัพย์|ประเภท", "asset_type"),
     (r"โฉนด|เอกสารสิทธิ|เลขที่ห้อง|น\.ส\.3", "deed_no"),
     (r"ตำบล|แขวง", "tambon"),
@@ -47,7 +49,9 @@ TYPE_MAP = [
     (r"ทาวน์|ทาวน์เฮ้าส์|ทาวน์เฮาส์|บ้านแถว", "ทาวน์เฮ้าส์"),
     (r"อาคารพาณิชย์|ตึกแถว|อาคารพาณิช", "อาคารพาณิชย์"),
     (r"บ้านแฝด", "บ้านแฝด"),
-    (r"บ้าน|สิ่งปลูกสร้าง|อาคาร", "บ้านเดี่ยว"),
+    (r"บ้านเดี่ยว", "บ้านเดี่ยว"),
+    (r"ที่ดินพร้อมสิ่งปลูกสร้าง|สิ่งปลูกสร้าง", "ที่ดินพร้อมสิ่งปลูกสร้าง"),
+    (r"บ้าน|อาคาร", "บ้านเดี่ยว"),
     (r"ที่ดินว่างเปล่า|ที่ดินเปล่า|ที่ดิน|ที่ว่าง", "ที่ดินเปล่า"),
 ]
 
@@ -143,61 +147,164 @@ def _finish(a: dict) -> dict:
     return a
 
 
+STRUCK_RE = re.compile(
+    r"danger|#?f8d7da|#?f5c6cb|#?ffcccc|#?fcc\b|#?ffc0cb|pink|#?ffdddd|#?fdd\b|#?f2dede|"
+    r"rgb\(\s*2[3-5]\d\s*,\s*(?:1[6-9]\d|2[0-2]\d)\s*,\s*(?:1[6-9]\d|2[0-2]\d)\s*\)",
+    re.I)
+
+
+def _grid(table) -> list[list]:
+    """ขยาย rowspan/colspan เป็นตาราง 2 มิติ: grid[r][c] = <td>/<th> ที่ครอบช่องนั้น"""
+    grid: list[list] = []
+    for r, tr in enumerate(table.find_all("tr")):
+        while len(grid) <= r:
+            grid.append([])
+        row = grid[r]
+        c = 0
+        for cell in tr.find_all(["td", "th"], recursive=False):
+            while c < len(row) and row[c] is not None:
+                c += 1
+            try:
+                rs = max(1, int(cell.get("rowspan", 1) or 1))
+                cs = max(1, int(cell.get("colspan", 1) or 1))
+            except ValueError:
+                rs, cs = 1, 1
+            for dr in range(min(rs, 50)):
+                while len(grid) <= r + dr:
+                    grid.append([])
+                tgt = grid[r + dr]
+                while len(tgt) < c + cs:
+                    tgt.append(None)
+                for dc in range(cs):
+                    tgt[c + dc] = cell
+            c += cs
+    return grid
+
+
+def _txt(cell) -> str:
+    return norm(cell.get_text(" ", strip=True)) if cell is not None else ""
+
+
+def _is_header_row(cells) -> bool:
+    uniq = [c for i, c in enumerate(cells) if c is not None and c not in cells[:i]]
+    texts = [_txt(c) for c in uniq if _txt(c)]
+    if not texts:
+        return False
+    mapped = sum(1 for t in texts if _hdr_field(t))
+    numeric = sum(1 for t in texts if re.fullmatch(r"[\d,.\s]+", t) and len(t) > 3)
+    return (any(c.name == "th" for c in uniq) or mapped >= max(2, len(texts) // 2)) and numeric == 0
+
+
+def _struck(tr) -> bool:
+    for el in [tr, *tr.find_all(["td", "th"], recursive=False)]:
+        attrs = " ".join(str(el.get(k, "")) for k in ("class", "style", "bgcolor"))
+        if STRUCK_RE.search(attrs) or el.find(["s", "strike", "del"]):
+            return True
+    return False
+
+
+def _merge_set(rows: list[dict]) -> dict:
+    """หลายแปลงที่ขายเป็นชุดเดียว (เลขคดี+ลำดับการขายเดียวกัน) -> ทรัพย์ 1 รายการ เนื้อที่รวม"""
+    a = dict(rows[0])
+    if len(rows) == 1:
+        return a
+    wah = sum((r.get("area_rai") or 0) * 400 + (r.get("area_ngan") or 0) * 100 + (r.get("area_wah") or 0) for r in rows)
+    a["area_rai"], rest = divmod(wah, 400)
+    a["area_ngan"], a["area_wah"] = divmod(rest, 100)
+    a["area_rai"], a["area_ngan"], a["area_wah"] = float(a["area_rai"]), float(a["area_ngan"]), round(a["area_wah"], 2)
+    sqm = sum(r.get("area_sqm") or 0 for r in rows)
+    a["area_sqm"] = sqm or None
+    a["plots"] = [{k: r.get(k) for k in ("asset_type", "tambon", "amphoe", "area_rai", "area_ngan", "area_wah", "area_sqm", "deed_no")}
+                  for r in rows]
+    a["n_plots"] = len(rows)
+    types = {r.get("asset_type") for r in rows}
+    if "ที่ดินพร้อมสิ่งปลูกสร้าง" in types and len(types) > 1:
+        a["asset_type"] = "ที่ดินพร้อมสิ่งปลูกสร้าง"
+    tams = list(dict.fromkeys(f"{r.get('tambon') or ''} {r.get('amphoe') or ''}".strip() for r in rows))
+    a["address_text"] = f"ขายรวม {len(rows)} แปลง: " + ", ".join(tams[:8])
+    a["_struck"] = all(r.get("_struck") for r in rows)
+    a["_rowtext"] = " | ".join(r.get("_rowtext", "") for r in rows)[:4000]
+    return a
+
+
 def parse_list_tables(tables_html: str, base_url: str) -> list[dict]:
     soup = BeautifulSoup(tables_html or "", "lxml")
     out: list[dict] = []
     for table in soup.find_all("table"):
-        rows = table.find_all("tr")
-        if len(rows) < 2:
+        trs = table.find_all("tr")
+        if len(trs) < 2:
             continue
-        # หาแถวหัวตาราง: แถวแรกที่จับคู่ฟิลด์ได้ ≥ 2
-        header_idx, fields = None, []
-        for i, tr in enumerate(rows[:5]):
-            cells = tr.find_all(["th", "td"])
-            f = [_hdr_field(c.get_text(" ", strip=True)) for c in cells]
-            if sum(1 for x in f if x) >= 2:
-                header_idx, fields = i, f
-                break
-        if header_idx is None:
+        grid = _grid(table)
+        # หาแถบหัวตาราง (อาจมีหลายชั้น เช่น "ขนาด" คลุม ไร่/งาน/ตร.วา)
+        h0 = next((i for i, row in enumerate(grid[:8]) if _is_header_row(row)), None)
+        if h0 is None:
             continue
-        for tr in rows[header_idx + 1:]:
-            cells = tr.find_all(["td", "th"])
-            if len(cells) < max(2, len(fields) // 2):
-                continue
+        h1 = h0
+        while h1 + 1 < len(grid) and _is_header_row(grid[h1 + 1]):
+            h1 += 1
+        ncol = max(len(r) for r in grid[h0:h1 + 1])
+        fields: list[str | None] = []
+        for c in range(ncol):
+            labels = [_txt(grid[r][c]) for r in range(h0, h1 + 1) if c < len(grid[r])]
+            labels = [l for l in labels if l]
+            f = None
+            for lab in reversed(labels):          # ชั้นล่างสุดเจาะจงที่สุด
+                f = _hdr_field(lab)
+                if f:
+                    break
+            fields.append(f)
+        if sum(1 for f in fields if f) < 2:
+            continue
+        rows: list[dict] = []
+        for r in range(h1 + 1, len(grid)):
+            cells = grid[r]
+            tr = trs[r] if r < len(trs) else None
+            uniq = [x for i, x in enumerate(cells) if x is not None and x not in cells[:i]]
+            if len([x for x in uniq if _txt(x)]) < 3:
+                continue                          # แถวสรุป/ว่าง
             a: dict = {}
             rounds: dict[int, dict] = {}
-            for field, c in zip(fields, cells):
-                txt = norm(c.get_text(" ", strip=True))
-                if not field or not txt:
+            for c, field in enumerate(fields):
+                if not field or c >= len(cells) or cells[c] is None:
+                    continue
+                txt = _txt(cells[c])
+                if not txt:
                     continue
                 if field == "sale_date":
-                    # บางเว็บใส่นัด 1–6 ในช่องเดียว
                     found = list(ROUND_LINE.finditer(txt))
                     if found:
                         for m in found:
-                            rounds[int(m.group(1))] = {"sale_date": to_date(m.group(2)),
-                                                       "result": round_result(m.group(3))}
+                            rounds[int(m.group(1))] = {"sale_date": to_date(m.group(2)), "result": round_result(m.group(3))}
                     else:
                         d = to_date(txt)
                         if d:
                             rounds.setdefault(1, {"sale_date": d, "result": None})
-                elif field == "status_text":
-                    a["status_text"] = txt
+                elif field in ("row_no",):
+                    continue
                 else:
                     a.setdefault(field, txt)
-            rowtext = norm(tr.get_text(" ", strip=True))
-            if not rowtext or not (a.get("appraisal_price") or a.get("listed_start_price")
-                                   or a.get("deed_no") or a.get("case_no")):
+            rowtext = " ".join(_txt(x) for x in uniq)
+            if not (a.get("appraisal_price") or a.get("listed_start_price") or a.get("deed_no") or a.get("case_no")):
                 continue
             a["_rowtext"] = rowtext
-            link = tr.find("a", href=True)
-            if link:
-                a["source_url"] = urljoin(base_url, link["href"])
+            if tr is not None:
+                link = tr.find("a", href=True)
+                if link:
+                    a["source_url"] = urljoin(base_url, link["href"])
+                elif tr.get("onclick"):
+                    m = re.search(r"['\"]([^'\"]+\.asp[^'\"]*)['\"]", tr["onclick"])
+                    if m:
+                        a["source_url"] = urljoin(base_url, m.group(1))
+                a["_struck"] = _struck(tr)
             for m in ROUND_LINE.finditer(rowtext):
-                rounds.setdefault(int(m.group(1)), {"sale_date": to_date(m.group(2)),
-                                                    "result": round_result(m.group(3))})
+                rounds.setdefault(int(m.group(1)), {"sale_date": to_date(m.group(2)), "result": round_result(m.group(3))})
             a["_rounds"] = rounds
-            out.append(_finish(a))
+            rows.append(_finish(a))
+        # รวมแปลงที่ขายเป็นชุดเดียวกัน
+        groups: dict[str, list[dict]] = {}
+        for a in rows:
+            groups.setdefault(a["id"], []).append(a)
+        out += [_merge_set(g) for g in groups.values()]
     return out
 
 

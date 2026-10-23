@@ -101,6 +101,10 @@ def risk(a: dict, cfg: dict) -> tuple[float, list[str]]:
         if re.search(rk["re"], text):
             pts += rk["pts"]
             flags.append(rk["label"])
+    raw = a.get("raw") if isinstance(a.get("raw"), dict) else {}
+    n_plots = a.get("n_plots") or raw.get("n_plots")
+    if n_plots and n_plots > 1:
+        flags.append(f"ขายรวม {n_plots} แปลง")
     if not a.get("appraisal_price"):
         flags.append("ไม่พบราคาประเมิน")
     return clamp(pts), flags
@@ -138,6 +142,8 @@ def score_asset(a: dict, rounds: list[dict], loc: dict | None, medians: dict, cf
     rp, flags = risk(a, cfg)
     if locs["s_location"] is None:
         flags.append("ยังไม่มีข้อมูลทำเล")
+    if not rounds:
+        flags.append("ยังไม่มีวันนัด — เปิดหน้ารายละเอียดแล้วกดเก็บ")
 
     out = {
         "asset_id": a["id"],
