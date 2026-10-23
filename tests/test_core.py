@@ -82,6 +82,7 @@ def test_location_features():
         {"type": "node", "lat": 13.002, "lon": 100.0, "tags": {"amenity": "school"}},
         {"type": "relation", "tags": {"landuse": "industrial"},
          "members": [{"geometry": [{"lat": 13.05, "lon": 100.0}]}]},
+        {"type": "count", "tags": {"total": "12"}},
         {"type": "count", "tags": {"ways": "350"}},
     ]
     f = location_features(13.0, 100.0, els)
@@ -89,7 +90,7 @@ def test_location_features():
     assert 1100 < f["d_hospital_m"] < 1120
     assert 5500 < f["d_industrial_m"] < 5600
     assert f["n_building_1km"] == 350
-    assert f["n_amenity_2km"] == 2   # school + hospital อยู่ใน 2 กม.
+    assert f["n_amenity_2km"] == 12  # จาก out count
 
 
 def test_scoring_orders_sensibly():
