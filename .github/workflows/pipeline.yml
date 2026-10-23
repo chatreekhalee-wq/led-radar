@@ -1,0 +1,65 @@
+name: LED Radar pipeline
+
+on:
+  schedule:
+    - cron: "17 */3 * * *"
+  push:
+    branches: [main]
+    paths: ["dashboard/**", "bookmarklet/**", "worker/config.json"]
+  workflow_dispatch:
+    inputs:
+      reparse:
+        description: "parse ข้อมูลดิบทั้งหมดใหม่ (หลังแก้ parser)"
+        type: boolean
+        default: false
+
+concurrency:
+  group: led-radar
+  cancel-in-progress: false
+
+jobs:
+  run:
+    if: github.event_name != 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Test
+        run: python -m pytest -q tests
+      - name: Pipeline
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          DASHBOARD_URL: ${{ vars.DASHBOARD_URL }}
+          OSM_USER_AGENT: ${{ vars.OSM_USER_AGENT }}
+        run: python -m worker.pipeline ${{ inputs.reparse && '--reparse' || '' }}
+
+  pages:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' || github.event_name == 'push'
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Build site
+        env:
+          SB_URL: ${{ vars.SUPABASE_URL_PUBLIC }}
+          SB_ANON: ${{ vars.SUPABASE_ANON_KEY }}
+        run: python dashboard/build_site.py
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - uses: actions/deploy-pages@v4
