@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<title>ตั้งค่า LED Radar</title>
+<style>
+  body { font: 15px/1.6 Tahoma, sans-serif; max-width: 560px; margin: 32px auto; padding: 0 16px; color: #1f2a28; }
+  label { display: block; font-weight: bold; margin: 14px 0 4px; }
+  input { width: 100%; box-sizing: border-box; padding: 9px 11px; border: 1px solid #ccd5d1; border-radius: 8px; font: 13px monospace; }
+  button { margin-top: 18px; padding: 10px 18px; border: 0; border-radius: 8px; background: #2f7d6d; color: #fff; font: bold 15px Tahoma; cursor: pointer; }
+  .hint { color: #5d6b67; font-size: 13px; } #msg { margin-left: 10px; color: #2f7d6d; }
+</style>
+</head>
+<body>
+  <h2>ตั้งค่า LED Radar</h2>
+  <p class="hint">ค่าเหล่านี้เก็บในเบราว์เซอร์ของคุณเท่านั้น</p>
+  <label for="url">Supabase Project URL <span class="hint">(ขึ้นต้น https:// ลงท้าย .supabase.co)</span></label>
+  <input id="url" placeholder="https://xxxx.supabase.co">
+  <label for="key">anon public key <span class="hint">(ขึ้นต้น eyJ...)</span></label>
+  <input id="key" placeholder="eyJhbGciOi...">
+  <label for="token">capture_token</label>
+  <input id="token" placeholder="รหัส 32 ตัวจาก SQL">
+  <label style="display:flex;gap:8px;align-items:center;font-weight:normal;margin-top:18px">
+    <input type="checkbox" id="auto" style="width:auto"> <b>เก็บอัตโนมัติ</b> — เก็บทุกหน้าของเว็บกรมบังคับคดีที่ฉันเปิด ไม่ต้องกดไอคอน
+  </label>
+  <p class="hint" id="total"></p>
+  <button id="save">บันทึก</button><span id="msg"></span>
+  <p class="hint">วิธีใช้: เปิดหน้าค้นหาทรัพย์ของกรมบังคับคดี รอผลค้นหาขึ้น แล้วกดไอคอน LED Radar บนแถบ extension (ปักหมุดไว้จะกดง่าย)</p>
+  <script src="options.js"></script>
+</body>
+</html>

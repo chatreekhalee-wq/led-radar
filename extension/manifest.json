@@ -1,0 +1,23 @@
+{
+  "manifest_version": 3,
+  "name": "LED Radar — เก็บทรัพย์",
+  "version": "1.1.0",
+  "description": "กดเพื่อเก็บข้อมูลทรัพย์จากหน้าเว็บกรมบังคับคดีที่เปิดอยู่ ส่งเข้า Supabase ของคุณ",
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "storage"
+  ],
+  "host_permissions": [
+    "https://*.supabase.co/*",
+    "https://*.led.go.th/*",
+    "http://*.led.go.th/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "เก็บทรัพย์หน้านี้"
+  },
+  "options_page": "options.html"
+}

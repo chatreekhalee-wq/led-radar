@@ -144,6 +144,9 @@ tbody tr.sel { background: var(--accent-soft); }
 .calc-out { margin-top: 10px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
 .calc-out div { background: var(--sunk); border-radius: 10px; padding: 10px; display: grid; }
 .calc-out small { color: var(--muted); font-size: 12px; } .calc-out b { font: 600 16px var(--f-mono); }
+.gallery { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; scroll-snap-type: x mandatory; }
+.gallery a { flex: 0 0 auto; scroll-snap-align: start; }
+.gallery img { height: 150px; width: auto; max-width: 260px; object-fit: cover; border-radius: 8px; border: 1px solid var(--line); background: var(--sunk); display: block; }
 .links { display: flex; gap: 8px; flex-wrap: wrap; }
 .links a { color: var(--accent); text-decoration: none; border: 1px solid var(--line); padding: 5px 10px; border-radius: 8px; font-size: 13px; }
 .mine { display: grid; gap: 10px; }
@@ -552,14 +555,20 @@ function openDetail(id) {
   const gmaps = r.lat != null ? `https://www.google.com/maps/search/?api=1&query=${r.lat},${r.lng}` : null;
   const editable = S.mode === "demo" || !!S.auth;
   const flags = r.risk_flags || [];
+  let imgs = r.images || [];
+  if (typeof imgs === "string") { try { imgs = JSON.parse(imgs); } catch (e) { imgs = []; } }
+  imgs = imgs.filter(u => /^https?:\/\//.test(u)).slice(0, 12);
 
   $("drawer").innerHTML = `
     <div class="d-head">
       <div><span class="score" style="background:${scoreColor(r.score)}">${fmt(r.score)}</span></div>
       <div><h3>${esc(r.asset_type || "ทรัพย์")} · ${esc(r.tambon || "")} ${esc(r.amphoe || "")}</h3>
-        <p>${esc(r.province || "")} · คดี ${esc(r.case_no || "–")} ลำดับ ${esc(r.lot_no || "–")}</p></div>
+        <p>${esc(r.province || "")} · คดี ${esc(r.case_no || "–")} ลำดับ ${esc(r.lot_no || "–")}</p>
+        ${r.address_text ? `<p class="hint">${esc(r.address_text).slice(0, 240)}</p>` : ""}</div>
       <button class="btn d-close" id="dClose" aria-label="ปิด">ปิด</button>
     </div>
+
+    ${imgs.length ? `<div class="d-sec"><div class="gallery">${imgs.map(u => `<a href="${esc(u)}" target="_blank" rel="noopener"><img src="${esc(u)}" alt="ภาพทรัพย์" loading="lazy" referrerpolicy="no-referrer" onerror="this.parentElement.remove()"></a>`).join("")}</div></div>` : ""}
 
     <div class="d-sec facts">
       <div><small>ราคาเริ่มนัดถัดไป (นัด ${nxt ?? "–"})</small><b class="num">${baht(r.next_start_price)}</b></div>
