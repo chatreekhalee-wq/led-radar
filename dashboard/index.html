@@ -1,0 +1,741 @@
+<title>LED Radar</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>/* Leaflet 1.9.4 (BSD-2) */.leaflet-image-layer,.leaflet-layer,.leaflet-marker-icon,.leaflet-marker-shadow,.leaflet-pane,.leaflet-pane>canvas,.leaflet-pane>svg,.leaflet-tile,.leaflet-tile-container,.leaflet-zoom-box{position:absolute;left:0;top:0}.leaflet-container{overflow:hidden}.leaflet-marker-icon,.leaflet-marker-shadow,.leaflet-tile{-webkit-user-select:none;-moz-user-select:none;user-select:none;-webkit-user-drag:none}.leaflet-tile::selection{background:0 0}.leaflet-safari .leaflet-tile{image-rendering:-webkit-optimize-contrast}.leaflet-safari .leaflet-tile-container{width:1600px;height:1600px;-webkit-transform-origin:0 0}.leaflet-marker-icon,.leaflet-marker-shadow{display:block}.leaflet-container .leaflet-overlay-pane svg{max-width:none!important;max-height:none!important}.leaflet-container .leaflet-marker-pane img,.leaflet-container .leaflet-shadow-pane img,.leaflet-container .leaflet-tile,.leaflet-container .leaflet-tile-pane img,.leaflet-container img.leaflet-image-layer{max-width:none!important;max-height:none!important;width:auto;padding:0}.leaflet-container img.leaflet-tile{mix-blend-mode:plus-lighter}.leaflet-container.leaflet-touch-zoom{-ms-touch-action:pan-x pan-y;touch-action:pan-x pan-y}.leaflet-container.leaflet-touch-drag{-ms-touch-action:pinch-zoom;touch-action:none;touch-action:pinch-zoom}.leaflet-container.leaflet-touch-drag.leaflet-touch-zoom{-ms-touch-action:none;touch-action:none}.leaflet-container{-webkit-tap-highlight-color:transparent}.leaflet-container a{-webkit-tap-highlight-color:rgba(51,181,229,0.4)}.leaflet-tile{filter:inherit;visibility:hidden}.leaflet-tile-loaded{visibility:inherit}.leaflet-zoom-box{width:0;height:0;-moz-box-sizing:border-box;box-sizing:border-box;z-index:800}.leaflet-overlay-pane svg{-moz-user-select:none}.leaflet-pane{z-index:400}.leaflet-tile-pane{z-index:200}.leaflet-overlay-pane{z-index:400}.leaflet-shadow-pane{z-index:500}.leaflet-marker-pane{z-index:600}.leaflet-tooltip-pane{z-index:650}.leaflet-popup-pane{z-index:700}.leaflet-map-pane canvas{z-index:100}.leaflet-map-pane svg{z-index:200}.leaflet-vml-shape{width:1px;height:1px}.lvml{behavior:url(#default#VML);display:inline-block;position:absolute}.leaflet-control{position:relative;z-index:800;pointer-events:visiblePainted;pointer-events:auto}.leaflet-bottom,.leaflet-top{position:absolute;z-index:1000;pointer-events:none}.leaflet-top{top:0}.leaflet-right{right:0}.leaflet-bottom{bottom:0}.leaflet-left{left:0}.leaflet-control{float:left;clear:both}.leaflet-right .leaflet-control{float:right}.leaflet-top .leaflet-control{margin-top:10px}.leaflet-bottom .leaflet-control{margin-bottom:10px}.leaflet-left .leaflet-control{margin-left:10px}.leaflet-right .leaflet-control{margin-right:10px}.leaflet-fade-anim .leaflet-popup{opacity:0;-webkit-transition:opacity .2s linear;-moz-transition:opacity .2s linear;transition:opacity .2s linear}.leaflet-fade-anim .leaflet-map-pane .leaflet-popup{opacity:1}.leaflet-zoom-animated{-webkit-transform-origin:0 0;-ms-transform-origin:0 0;transform-origin:0 0}svg.leaflet-zoom-animated{will-change:transform}.leaflet-zoom-anim .leaflet-zoom-animated{-webkit-transition:-webkit-transform .25s cubic-bezier(0,0,.25,1);-moz-transition:-moz-transform .25s cubic-bezier(0,0,.25,1);transition:transform .25s cubic-bezier(0,0,.25,1)}.leaflet-pan-anim .leaflet-tile,.leaflet-zoom-anim .leaflet-tile{-webkit-transition:none;-moz-transition:none;transition:none}.leaflet-zoom-anim .leaflet-zoom-hide{visibility:hidden}.leaflet-interactive{cursor:pointer}.leaflet-grab{cursor:-webkit-grab;cursor:-moz-grab;cursor:grab}.leaflet-crosshair,.leaflet-crosshair .leaflet-interactive{cursor:crosshair}.leaflet-control,.leaflet-popup-pane{cursor:auto}.leaflet-dragging .leaflet-grab,.leaflet-dragging .leaflet-grab .leaflet-interactive,.leaflet-dragging .leaflet-marker-draggable{cursor:move;cursor:-webkit-grabbing;cursor:-moz-grabbing;cursor:grabbing}.leaflet-image-layer,.leaflet-marker-icon,.leaflet-marker-shadow,.leaflet-pane>svg path,.leaflet-tile-container{pointer-events:none}.leaflet-image-layer.leaflet-interactive,.leaflet-marker-icon.leaflet-interactive,.leaflet-pane>svg path.leaflet-interactive,svg.leaflet-image-layer.leaflet-interactive path{pointer-events:visiblePainted;pointer-events:auto}.leaflet-container{background:#ddd;outline-offset:1px}.leaflet-container a{color:#0078a8}.leaflet-zoom-box{border:2px dotted #38f;background:rgba(255,255,255,.5)}.leaflet-container{font-family:"Helvetica Neue",Arial,Helvetica,sans-serif;font-size:12px;font-size:.75rem;line-height:1.5}.leaflet-bar{box-shadow:0 1px 5px rgba(0,0,0,.65);border-radius:4px}.leaflet-bar a{background-color:#fff;border-bottom:1px solid #ccc;width:26px;height:26px;line-height:26px;display:block;text-align:center;text-decoration:none;color:#000}.leaflet-bar a,.leaflet-control-layers-toggle{background-position:50% 50%;background-repeat:no-repeat;display:block}.leaflet-bar a:focus,.leaflet-bar a:hover{background-color:#f4f4f4}.leaflet-bar a:first-child{border-top-left-radius:4px;border-top-right-radius:4px}.leaflet-bar a:last-child{border-bottom-left-radius:4px;border-bottom-right-radius:4px;border-bottom:none}.leaflet-bar a.leaflet-disabled{cursor:default;background-color:#f4f4f4;color:#bbb}.leaflet-touch .leaflet-bar a{width:30px;height:30px;line-height:30px}.leaflet-touch .leaflet-bar a:first-child{border-top-left-radius:2px;border-top-right-radius:2px}.leaflet-touch .leaflet-bar a:last-child{border-bottom-left-radius:2px;border-bottom-right-radius:2px}.leaflet-control-zoom-in,.leaflet-control-zoom-out{font:bold 18px 'Lucida Console',Monaco,monospace;text-indent:1px}.leaflet-touch .leaflet-control-zoom-in,.leaflet-touch .leaflet-control-zoom-out{font-size:22px}.leaflet-control-layers{box-shadow:0 1px 5px rgba(0,0,0,.4);background:#fff;border-radius:5px}.leaflet-control-layers-toggle{background-image:none;width:36px;height:36px}.leaflet-retina .leaflet-control-layers-toggle{background-image:none;background-size:26px 26px}.leaflet-touch .leaflet-control-layers-toggle{width:44px;height:44px}.leaflet-control-layers .leaflet-control-layers-list,.leaflet-control-layers-expanded .leaflet-control-layers-toggle{display:none}.leaflet-control-layers-expanded .leaflet-control-layers-list{display:block;position:relative}.leaflet-control-layers-expanded{padding:6px 10px 6px 6px;color:#333;background:#fff}.leaflet-control-layers-scrollbar{overflow-y:scroll;overflow-x:hidden;padding-right:5px}.leaflet-control-layers-selector{margin-top:2px;position:relative;top:1px}.leaflet-control-layers label{display:block;font-size:13px;font-size:1.08333em}.leaflet-control-layers-separator{height:0;border-top:1px solid #ddd;margin:5px -10px 5px -6px}.leaflet-default-icon-path{background-image:none}.leaflet-container .leaflet-control-attribution{background:#fff;background:rgba(255,255,255,.8);margin:0}.leaflet-control-attribution,.leaflet-control-scale-line{padding:0 5px;color:#333;line-height:1.4}.leaflet-control-attribution a{text-decoration:none}.leaflet-control-attribution a:focus,.leaflet-control-attribution a:hover{text-decoration:underline}.leaflet-attribution-flag{display:inline!important;vertical-align:baseline!important;width:1em;height:.6669em}.leaflet-left .leaflet-control-scale{margin-left:5px}.leaflet-bottom .leaflet-control-scale{margin-bottom:5px}.leaflet-control-scale-line{border:2px solid #777;border-top:none;line-height:1.1;padding:2px 5px 1px;white-space:nowrap;-moz-box-sizing:border-box;box-sizing:border-box;background:rgba(255,255,255,.8);text-shadow:1px 1px #fff}.leaflet-control-scale-line:not(:first-child){border-top:2px solid #777;border-bottom:none;margin-top:-2px}.leaflet-control-scale-line:not(:first-child):not(:last-child){border-bottom:2px solid #777}.leaflet-touch .leaflet-bar,.leaflet-touch .leaflet-control-attribution,.leaflet-touch .leaflet-control-layers{box-shadow:none}.leaflet-touch .leaflet-bar,.leaflet-touch .leaflet-control-layers{border:2px solid rgba(0,0,0,.2);background-clip:padding-box}.leaflet-popup{position:absolute;text-align:center;margin-bottom:20px}.leaflet-popup-content-wrapper{padding:1px;text-align:left;border-radius:12px}.leaflet-popup-content{margin:13px 24px 13px 20px;line-height:1.3;font-size:13px;font-size:1.08333em;min-height:1px}.leaflet-popup-content p{margin:17px 0;margin:1.3em 0}.leaflet-popup-tip-container{width:40px;height:20px;position:absolute;left:50%;margin-top:-1px;margin-left:-20px;overflow:hidden;pointer-events:none}.leaflet-popup-tip{width:17px;height:17px;padding:1px;margin:-10px auto 0;pointer-events:auto;-webkit-transform:rotate(45deg);-moz-transform:rotate(45deg);-ms-transform:rotate(45deg);transform:rotate(45deg)}.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:#fff;color:#333;box-shadow:0 3px 14px rgba(0,0,0,.4)}.leaflet-container a.leaflet-popup-close-button{position:absolute;top:0;right:0;border:none;text-align:center;width:24px;height:24px;font:16px/24px Tahoma,Verdana,sans-serif;color:#757575;text-decoration:none;background:0 0}.leaflet-container a.leaflet-popup-close-button:focus,.leaflet-container a.leaflet-popup-close-button:hover{color:#585858}.leaflet-popup-scrolled{overflow:auto}.leaflet-oldie .leaflet-popup-content-wrapper{-ms-zoom:1}.leaflet-oldie .leaflet-popup-tip{width:24px;margin:0 auto}.leaflet-oldie .leaflet-control-layers,.leaflet-oldie .leaflet-control-zoom,.leaflet-oldie .leaflet-popup-content-wrapper,.leaflet-oldie .leaflet-popup-tip{border:1px solid #999}.leaflet-div-icon{background:#fff;border:1px solid #666}.leaflet-tooltip{position:absolute;padding:6px;background-color:#fff;border:1px solid #fff;border-radius:3px;color:#222;white-space:nowrap;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;pointer-events:none;box-shadow:0 1px 3px rgba(0,0,0,.4)}.leaflet-tooltip.leaflet-interactive{cursor:pointer;pointer-events:auto}.leaflet-tooltip-bottom:before,.leaflet-tooltip-left:before,.leaflet-tooltip-right:before,.leaflet-tooltip-top:before{position:absolute;pointer-events:none;border:6px solid transparent;background:0 0;content:""}.leaflet-tooltip-bottom{margin-top:6px}.leaflet-tooltip-top{margin-top:-6px}.leaflet-tooltip-bottom:before,.leaflet-tooltip-top:before{left:50%;margin-left:-6px}.leaflet-tooltip-top:before{bottom:0;margin-bottom:-12px;border-top-color:#fff}.leaflet-tooltip-bottom:before{top:0;margin-top:-12px;margin-left:-6px;border-bottom-color:#fff}.leaflet-tooltip-left{margin-left:-6px}.leaflet-tooltip-right{margin-left:6px}.leaflet-tooltip-left:before,.leaflet-tooltip-right:before{top:50%;margin-top:-6px}.leaflet-tooltip-left:before{right:0;margin-right:-12px;border-left-color:#fff}.leaflet-tooltip-right:before{left:0;margin-left:-12px;border-right-color:#fff}@media print{.leaflet-control{-webkit-print-color-adjust:exact;print-color-adjust:exact}}</style>
+<style>
+/* Layout: แถบควบคุมบนสุด → KPI → [ตัวกรอง | ตาราง+แผนที่] → ลิ้นชักรายละเอียดด้านขวา
+   ที่มาของสี: แผนที่ระวางที่ดิน (เขียวหม่นของเส้นแปลง) + แดงตราครุฑบนโฉนด ใช้เฉพาะสัญญาณเสี่ยง */
+:root {
+  --bg: #eef1ef; --surface: #ffffff; --sunk: #e4e9e6; --line: #d3dbd7;
+  --ink: #17211e; --muted: #5b6964; --faint: #8a9792;
+  --accent: #116a5a; --accent-ink: #ffffff; --accent-soft: #d6ebe5;
+  --seal: #b3332b; --seal-soft: #f6dedb;
+  --warn: #9a6a00; --warn-soft: #f6ebcf;
+  --s-hi: #116a5a; --s-mid: #c08a1c; --s-lo: #9aa6a1;
+  --shadow: 0 1px 2px rgba(20,40,34,.06), 0 8px 28px rgba(20,40,34,.08);
+  --f-display: "Bai Jamjuree", "IBM Plex Sans Thai", Tahoma, sans-serif;
+  --f-body: "IBM Plex Sans Thai", Tahoma, "Noto Sans Thai", sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #111816; --surface: #18211e; --sunk: #0d1311; --line: #2a3632;
+  --ink: #e3ebe7; --muted: #9aaaa4; --faint: #6c7b76;
+  --accent: #4fb59f; --accent-ink: #0b1513; --accent-soft: #17342d;
+  --seal: #e0675d; --seal-soft: #3a1d1a; --warn: #e2b04a; --warn-soft: #382c12;
+  --s-hi: #4fb59f; --s-mid: #d9a640; --s-lo: #5d6b66;
+  --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 28px rgba(0,0,0,.35); color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #111816; --surface: #18211e; --sunk: #0d1311; --line: #2a3632;
+  --ink: #e3ebe7; --muted: #9aaaa4; --faint: #6c7b76;
+  --accent: #4fb59f; --accent-ink: #0b1513; --accent-soft: #17342d;
+  --seal: #e0675d; --seal-soft: #3a1d1a; --warn: #e2b04a; --warn-soft: #382c12;
+  --s-hi: #4fb59f; --s-mid: #d9a640; --s-lo: #5d6b66;
+  --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 28px rgba(0,0,0,.35); color-scheme: dark; }
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body { background: var(--bg); color: var(--ink); font: 14px/1.55 var(--f-body); margin: 0; }
+button, input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.num { font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+
+.wrap { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+
+/* top bar */
+header.bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 600; background: var(--surface); border-bottom: 1px solid var(--line); }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--surface); }
+.bar-in { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; padding-block: 10px; }
+.brand { display: flex; align-items: baseline; gap: 10px; margin-right: auto; }
+.brand b { font: 700 20px/1 var(--f-display); letter-spacing: .2px; }
+.brand span { color: var(--muted); font-size: 13px; }
+.seg { display: inline-flex; background: var(--sunk); border-radius: 10px; padding: 3px; gap: 2px; }
+.seg button { border: 0; background: transparent; padding: 6px 12px; border-radius: 8px; cursor: pointer; color: var(--muted); font-weight: 500; }
+.seg button[aria-pressed="true"] { background: var(--surface); color: var(--ink); box-shadow: 0 1px 2px rgba(0,0,0,.08); }
+.btn { border: 1px solid var(--line); background: var(--surface); padding: 6px 12px; border-radius: 8px; cursor: pointer; }
+.btn:hover { border-color: var(--accent); }
+.btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.demo { background: var(--warn-soft); color: var(--warn); font-size: 13px; padding-block: 6px; }
+
+/* weights */
+.weights { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px 20px; padding-block: 12px; border-top: 1px solid var(--line); }
+.weights label { display: grid; gap: 2px; font-size: 12px; color: var(--muted); }
+.weights input[type=range] { accent-color: var(--accent); width: 100%; }
+
+/* KPI */
+.kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; padding-block: 16px 4px; }
+.kpi { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; display: grid; gap: 2px; }
+.kpi small { color: var(--muted); font-size: 12px; }
+.kpi b { font: 600 24px/1.2 var(--f-mono); font-variant-numeric: tabular-nums; }
+.kpi em { font-style: normal; font-size: 12px; color: var(--faint); }
+@media (max-width: 760px) { .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* main */
+main { display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: 16px; padding-block: 12px 32px; align-items: start; }
+@media (max-width: 960px) { main { grid-template-columns: minmax(0, 1fr); } }
+aside.filters { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px; display: grid; gap: 12px; position: sticky; top: 72px; }
+@media (max-width: 960px) { aside.filters { position: static; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); } }
+.f label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 3px; }
+.f input, .f select { width: 100%; padding: 7px 9px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); }
+.f .row { display: flex; gap: 6px; align-items: center; }
+.chk { display: flex; gap: 8px; align-items: center; font-size: 13px; cursor: pointer; }
+.chk input { accent-color: var(--accent); }
+
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+.content { display: grid; gap: 16px; min-width: 0; }
+#map { height: 380px; background:
+  linear-gradient(var(--line) 1px, transparent 1px) 0 0/40px 40px,
+  linear-gradient(90deg, var(--line) 1px, transparent 1px) 0 0/40px 40px, var(--sunk); }
+.leaflet-container { font: inherit; background: transparent; }
+.map-note { position: absolute; z-index: 500; left: 10px; bottom: 10px; background: var(--surface); color: var(--muted); font-size: 12px; padding: 4px 8px; border-radius: 6px; border: 1px solid var(--line); }
+.legend { position: absolute; z-index: 500; right: 10px; top: 10px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; font-size: 12px; display: flex; gap: 10px; }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 4px; vertical-align: -1px; }
+
+.tbl-head { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; border-bottom: 1px solid var(--line); gap: 8px; flex-wrap: wrap; }
+.tbl-head h2 { font: 600 16px var(--f-display); margin: 0; }
+.tbl-wrap { overflow-x: auto; max-height: 640px; overflow-y: auto; }
+table { width: 100%; border-collapse: collapse; min-width: 880px; }
+th, td { padding: 9px 10px; text-align: left; border-bottom: 1px solid var(--line); white-space: nowrap; vertical-align: middle; }
+th { position: sticky; top: 0; background: var(--surface); font-size: 12px; color: var(--muted); font-weight: 500; cursor: pointer; user-select: none; z-index: 1; }
+th[aria-sort] { color: var(--ink); }
+th[aria-sort="descending"]::after { content: " ↓"; } th[aria-sort="ascending"]::after { content: " ↑"; }
+td.r, th.r { text-align: right; }
+tbody tr { cursor: pointer; } tbody tr:hover { background: var(--sunk); }
+tbody tr.sel { background: var(--accent-soft); }
+.score { display: inline-grid; place-items: center; min-width: 40px; height: 26px; border-radius: 7px; font: 600 13px var(--f-mono); color: #fff; padding: 0 6px; }
+.where { display: grid; } .where small { color: var(--muted); font-size: 12px; }
+.pill { display: inline-block; padding: 1px 8px; border-radius: 999px; font-size: 12px; background: var(--sunk); color: var(--muted); }
+.pill.seal { background: var(--seal-soft); color: var(--seal); }
+.pill.warn { background: var(--warn-soft); color: var(--warn); }
+.pill.ok { background: var(--accent-soft); color: var(--accent); }
+.empty { padding: 40px 16px; text-align: center; color: var(--muted); }
+
+/* drawer */
+.drawer { position: fixed; z-index: 900; top: 0; right: 0; bottom: 0; width: min(560px, 100%); background: var(--surface); border-left: 1px solid var(--line);
+  box-shadow: var(--shadow); overflow-y: auto; transform: translateX(100%); transition: transform .22s ease;
+  padding: calc(16px + env(safe-area-inset-top, 0px)) max(18px, env(safe-area-inset-right, 0px)) calc(32px + env(safe-area-inset-bottom, 0px)) 18px; }
+.drawer.open { transform: none; }
+@media (prefers-reduced-motion: reduce) { .drawer { transition: none; } }
+.scrim { position: fixed; inset: 0; z-index: 800; background: rgba(10,20,17,.35); }
+.d-head { display: flex; gap: 12px; align-items: flex-start; }
+.d-head h3 { font: 600 20px/1.3 var(--f-display); margin: 0; text-wrap: balance; }
+.d-head p { margin: 2px 0 0; color: var(--muted); }
+.d-close { margin-left: auto; }
+.d-sec { margin-top: 20px; }
+.d-sec h4 { font: 600 13px var(--f-display); letter-spacing: .4px; color: var(--muted); margin: 0 0 8px; text-transform: uppercase; }
+.facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 16px; }
+.facts div { display: grid; } .facts small { color: var(--muted); font-size: 12px; } .facts b { font-weight: 500; }
+.bars { display: grid; gap: 7px; }
+.bar-row { display: grid; grid-template-columns: 110px 1fr 40px; gap: 10px; align-items: center; font-size: 13px; }
+.bar-track { height: 8px; background: var(--sunk); border-radius: 4px; overflow: hidden; }
+.bar-fill { height: 100%; background: var(--accent); border-radius: 4px; }
+.bar-fill.na { background: repeating-linear-gradient(45deg, var(--line) 0 4px, transparent 4px 8px); }
+.ladder { display: grid; gap: 6px; }
+.rung { display: grid; grid-template-columns: 54px 1fr 112px; gap: 10px; align-items: center; font-size: 13px; }
+.rung .track { height: 22px; background: var(--sunk); border-radius: 5px; position: relative; overflow: hidden; }
+.rung .fill { position: absolute; inset: 0 auto 0 0; background: var(--line); border-radius: 5px; }
+.rung.next .fill { background: var(--accent); }
+.rung.past .fill { background: var(--faint); opacity: .45; }
+.rung .lab { position: absolute; left: 8px; top: 1px; font-size: 12px; color: var(--ink); }
+.rung.next .lab { color: var(--accent-ink); }
+.calc { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 14px; }
+.calc label { font-size: 12px; color: var(--muted); display: grid; gap: 3px; }
+.calc input { padding: 7px 9px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); width: 100%; }
+.calc-out { margin-top: 10px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.calc-out div { background: var(--sunk); border-radius: 10px; padding: 10px; display: grid; }
+.calc-out small { color: var(--muted); font-size: 12px; } .calc-out b { font: 600 16px var(--f-mono); }
+.links { display: flex; gap: 8px; flex-wrap: wrap; }
+.links a { color: var(--accent); text-decoration: none; border: 1px solid var(--line); padding: 5px 10px; border-radius: 8px; font-size: 13px; }
+.mine { display: grid; gap: 10px; }
+.mine textarea { width: 100%; min-height: 70px; padding: 8px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); resize: vertical; }
+.mine .row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.mine input, .mine select { width: 100%; padding: 7px 9px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); }
+.hint { font-size: 12px; color: var(--faint); }
+.toast { position: fixed; z-index: 1000; left: 50%; transform: translateX(-50%); bottom: calc(18px + env(safe-area-inset-bottom, 0px)); background: var(--ink); color: var(--bg); padding: 8px 14px; border-radius: 8px; font-size: 13px; }
+.login { display: flex; gap: 6px; align-items: center; }
+.login input { padding: 6px 9px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); width: 200px; }
+</style>
+
+<header class="bar">
+  <div class="wrap bar-in">
+    <div class="brand"><b>LED Radar</b><span>คัดทรัพย์ขายทอดตลาด กรมบังคับคดี</span></div>
+    <div class="seg" id="presets" role="group" aria-label="เป้าหมายการซื้อ"></div>
+    <button class="btn" id="tuneBtn" aria-expanded="false">ปรับน้ำหนัก</button>
+    <div class="login" id="login"></div>
+  </div>
+  <div class="wrap weights" id="weights" hidden></div>
+  <div class="wrap demo" id="demoBar" hidden>ข้อมูลตัวอย่าง (สุ่มขึ้นเพื่อสาธิต ไม่ใช่ทรัพย์จริง) · เมื่อวางบน GitHub Pages พร้อม config.json หน้านี้จะดึงข้อมูลจริงจาก Supabase</div>
+</header>
+
+<div class="wrap">
+  <section class="kpis" id="kpis" aria-label="สรุป"></section>
+  <main>
+    <aside class="filters" aria-label="ตัวกรอง">
+      <div class="f"><label for="q">ค้นหา</label><input id="q" placeholder="ตำบล อำเภอ เลขคดี โฉนด"></div>
+      <div class="f"><label for="fProv">จังหวัด</label><select id="fProv"><option value="">ทุกจังหวัด</option></select></div>
+      <div class="f"><label for="fAmp">อำเภอ/เขต</label><select id="fAmp"><option value="">ทุกอำเภอ</option></select></div>
+      <div class="f"><label for="fType">ประเภท</label><select id="fType"><option value="">ทุกประเภท</option></select></div>
+      <div class="f"><label for="fMax">ราคาเริ่มนัดถัดไป ไม่เกิน (บาท)</label><input id="fMax" class="num" inputmode="numeric" placeholder="เช่น 2,000,000"></div>
+      <div class="f"><label for="fScore">คะแนนขั้นต่ำ: <span id="fScoreV" class="num">0</span></label><input id="fScore" type="range" min="0" max="90" step="5" value="0" style="accent-color:var(--accent)"></div>
+      <div class="f"><label for="fRound">นัดถัดไปตั้งแต่นัดที่</label><select id="fRound"><option value="0">ทุกนัด</option><option value="2">2 ขึ้นไป (≤90%)</option><option value="3">3 ขึ้นไป (≤80%)</option><option value="4">4 ขึ้นไป (70%)</option></select></div>
+      <div class="f"><label for="fDays">ขายภายใน</label><select id="fDays"><option value="0">ไม่จำกัด</option><option value="7">7 วัน</option><option value="14">14 วัน</option><option value="30">30 วัน</option></select></div>
+      <label class="chk"><input type="checkbox" id="fNoRisk"> ซ่อนทรัพย์ที่มีสัญญาณเสี่ยงสูง</label>
+      <label class="chk"><input type="checkbox" id="fWatch"> เฉพาะที่ติดตาม</label>
+      <button class="btn" id="fReset">ล้างตัวกรอง</button>
+    </aside>
+
+    <div class="content">
+      <div class="panel" style="position:relative">
+        <div id="map" role="region" aria-label="แผนที่ทรัพย์"></div>
+        <div class="legend"><span><i style="background:var(--s-hi)"></i>≥70</span><span><i style="background:var(--s-mid)"></i>50–69</span><span><i style="background:var(--s-lo)"></i>&lt;50</span></div>
+        <div class="map-note" id="mapNote" hidden></div>
+      </div>
+      <div class="panel">
+        <div class="tbl-head"><h2 id="tblTitle">ทรัพย์ที่ผ่านตัวกรอง</h2><span class="hint" id="tblHint"></span></div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr id="thead"></tr></thead>
+            <tbody id="tbody"></tbody>
+          </table>
+          <div class="empty" id="empty" hidden>ไม่มีทรัพย์ที่ตรงกับตัวกรอง ลองลดคะแนนขั้นต่ำหรือขยายราคา</div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div class="scrim" id="scrim" hidden></div>
+<aside class="drawer" id="drawer" aria-hidden="true" aria-label="รายละเอียดทรัพย์"></aside>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+"use strict";
+/* ============================== ค่าตั้ง ============================== */
+const DEFAULT_PRESETS = {
+  presets: {
+    rent: { label: "ปล่อยเช่า",    w: { discount: .25, unit_price: .15, location: .40, competition: .10 }, location_key: "s_location_rent" },
+    flip: { label: "รีโนเวทขาย",  w: { discount: .35, unit_price: .25, location: .30, competition: .10 }, location_key: "s_location" },
+    land: { label: "ที่ดิน/เกษตร", w: { discount: .25, unit_price: .30, location: .35, competition: .10 }, location_key: "s_location_land" }
+  },
+  risk_weight: .30,
+  round_price_pct: { "1": 1, "2": .9, "3": .8, "default": .7 }
+};
+const W_LABEL = { discount: "ส่วนลดจากราคาประเมิน", unit_price: "ราคาต่อหน่วยเทียบพื้นที่", location: "ทำเล", competition: "คู่แข่งน้อย (ขายไม่ออกหลายนัด)" };
+const LS = "ledradar:v1";
+
+const S = {
+  mode: "demo", cfg: null, P: DEFAULT_PRESETS, preset: "flip", custom: null,
+  rows: [], view: [], sort: { key: "score", dir: -1 }, sel: null,
+  auth: null, map: null, layer: null, markers: {}
+};
+
+const $ = (id) => document.getElementById(id);
+const fmt = (v, d = 0) => v == null || isNaN(v) ? "–" : Number(v).toLocaleString("th-TH", { maximumFractionDigits: d, minimumFractionDigits: d });
+const baht = (v) => v == null ? "–" : fmt(v) + " ฿";
+const clamp = (x, lo = 0, hi = 100) => Math.max(lo, Math.min(hi, x));
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const today = () => { const d = new Date(); d.setHours(0, 0, 0, 0); return d; };
+const dayDiff = (iso) => iso ? Math.round((new Date(iso + "T00:00:00") - today()) / 864e5) : null;
+const thDate = (iso) => iso ? new Date(iso + "T00:00:00").toLocaleDateString("th-TH", { day: "numeric", month: "short", year: "2-digit" }) : "–";
+function store(get, val) {
+  try { const o = JSON.parse(localStorage.getItem(LS) || "{}"); if (get) return o; Object.assign(o, val); localStorage.setItem(LS, JSON.stringify(o)); } catch (e) { return {}; }
+}
+function toast(msg) { const t = document.createElement("div"); t.className = "toast"; t.textContent = msg; document.body.appendChild(t); setTimeout(() => t.remove(), 2600); }
+
+/* ============================== คะแนน (สูตรเดียวกับ worker/score.py: combine) ============================== */
+function activePreset() {
+  const p = S.P.presets[S.preset];
+  return S.custom ? { ...p, w: S.custom } : p;
+}
+function combine(r, p, riskW) {
+  const v = { discount: r.s_discount, unit_price: r.s_unit_price, location: r[p.location_key], competition: r.s_competition };
+  let tot = 0, sum = 0;
+  for (const k in p.w) { tot += p.w[k]; sum += (v[k] == null ? 50 : v[k]) * p.w[k]; }
+  return Math.round(clamp(sum / tot - (r.risk_penalty || 0) * riskW) * 10) / 10;
+}
+const scoreColor = (s) => s >= 70 ? "var(--s-hi)" : s >= 50 ? "var(--s-mid)" : "var(--s-lo)";
+const pct = (n) => Number(S.P.round_price_pct[String(n)] ?? S.P.round_price_pct.default);
+
+/* ============================== ข้อมูลตัวอย่าง ============================== */
+function demoData() {
+  let seed = 20261023; const rnd = () => (seed = (seed * 1664525 + 1013904223) % 4294967296) / 4294967296;
+  const pick = (a) => a[Math.floor(rnd() * a.length)];
+  const D = [
+    ["ชลบุรี", "ศรีราชา", ["บางพระ", "สุรศักดิ์", "หนองขาม"], 13.17, 100.93, .85, 28000],
+    ["ชลบุรี", "บางละมุง", ["หนองปรือ", "นาเกลือ"], 12.93, 100.89, .9, 32000],
+    ["ชลบุรี", "เมืองชลบุรี", ["บ้านสวน", "เสม็ด"], 13.36, 100.98, .8, 30000],
+    ["ชลบุรี", "พานทอง", ["หนองตำลึง", "บางนาง"], 13.46, 101.09, .55, 9000],
+    ["ราชบุรี", "เมืองราชบุรี", ["หน้าเมือง", "ดอนตะโก"], 13.54, 99.81, .6, 12000],
+    ["ราชบุรี", "โพธาราม", ["หนองโพ", "ดอนกระเบื้อง"], 13.69, 99.85, .4, 4500],
+    ["ราชบุรี", "บ้านโป่ง", ["ท่าผา", "กรับใหญ่"], 13.82, 99.87, .55, 8000],
+    ["ราชบุรี", "ดำเนินสะดวก", ["ศรีสุราษฎร์"], 13.52, 99.95, .35, 3500],
+    ["กรุงเทพมหานคร", "บางแค", ["บางแคเหนือ", "หลักสอง"], 13.71, 100.40, .95, 65000],
+    ["กรุงเทพมหานคร", "มีนบุรี", ["แสนแสบ", "มีนบุรี"], 13.81, 100.73, .85, 45000],
+    ["กรุงเทพมหานคร", "ลาดกระบัง", ["ลำปลาทิว", "ขุมทอง"], 13.73, 100.75, .7, 30000]
+  ];
+  const TYPES = [["บ้านเดี่ยว", .3], ["ทาวน์เฮ้าส์", .25], ["ห้องชุด", .15], ["ที่ดินเปล่า", .22], ["อาคารพาณิชย์", .08]];
+  const RISKS = [["ขายเฉพาะส่วน/กรรมสิทธิ์รวม", 45], ["มีผู้อาศัย/ครอบครอง", 20], ["ติดภาระจำยอม", 15], ["อาจไม่มีทางเข้าออก", 40], ["ที่ลุ่ม/บ่อ", 10]];
+  const t0 = today(); const iso = (d) => new Date(d.getTime() - d.getTimezoneOffset() * 6e4).toISOString().slice(0, 10);
+  const rows = [];
+  for (let i = 0; i < 64; i++) {
+    const [prov, amp, tams, la, lo, urb, wahPrice] = pick(D);
+    let x = rnd(), type = TYPES[0][0]; for (const [t, w] of TYPES) { if ((x -= w) < 0) { type = t; break; } }
+    if (type === "ห้องชุด" && urb < .6) type = "ทาวน์เฮ้าส์";
+    const land = type === "ที่ดินเปล่า";
+    const wah = land ? Math.round(100 + rnd() * (urb < .6 ? 3200 : 600)) : type === "ห้องชุด" ? 0 : Math.round(18 + rnd() * 70);
+    const sqm = type === "ห้องชุด" ? Math.round((24 + rnd() * 40) * 10) / 10 : null;
+    const unitBase = type === "ห้องชุด" ? wahPrice * 1.6 : land ? wahPrice * .45 : wahPrice * 1.9;
+    const unitF = .65 + rnd() * .7;
+    const appraisal = Math.round((sqm ? sqm : wah) * unitBase * unitF / 1000) * 1000;
+    const cur = 1 + Math.floor(Math.pow(rnd(), 1.3) * 6);
+    const firstDate = new Date(t0); firstDate.setDate(t0.getDate() - (cur - 1) * 21 + Math.floor(rnd() * 20) - 4);
+    const rounds = [];
+    for (let n = 1; n <= 6; n++) {
+      const d = new Date(firstDate); d.setDate(firstDate.getDate() + (n - 1) * 21);
+      const past = d < t0;
+      rounds.push({ round: n, date: iso(d), result: past ? (rnd() < .55 ? "ไม่มีผู้ซื้อ" : "งดขาย") : null, start_price: Math.round(appraisal * pct(n)), sold_price: null });
+    }
+    const nr = rounds.find(r => !r.result);
+    const flags = [], nf = rnd() < .22 ? 1 + (rnd() < .3 ? 1 : 0) : 0; let rp = 0;
+    for (let k = 0; k < nf; k++) { const r = pick(RISKS); if (!flags.includes(r[0])) { flags.push(r[0]); rp += r[1]; } }
+    const geoP = rnd() < .25 ? "address" : "tambon";
+    const jit = geoP === "tambon" ? .035 : .06;
+    const lat = la + (rnd() - .5) * jit * 2, lng = lo + (rnd() - .5) * jit * 2;
+    const road = Math.round((1 - urb) * 3500 * rnd() + 60), ind = Math.round(1500 + (1 - urb) * 16000 * rnd());
+    const near = (d, g, b) => d <= g ? 100 : d >= b ? 0 : 100 * (b - d) / (b - g);
+    const shrink = (v) => geoP === "tambon" ? v * .6 + 20 : v;
+    const sLoc = shrink(clamp(urb * 80 + rnd() * 25 - 5)), sRent = shrink(clamp(near(ind, 2000, 15000) * .45 + urb * 55)), sLand = shrink(near(road, 100, 2000) * .7 + rnd() * 30);
+    const ratio = nr ? nr.start_price / appraisal : null;
+    const unitPay = nr ? nr.start_price / (sqm || wah || 1) : null;
+    const r = {
+      id: "demo" + String(i).padStart(3, "0"), source_url: null,
+      case_no: `ผบ.${Math.floor(1000 + rnd() * 8000)}/${2565 + Math.floor(rnd() * 3)}`, lot_no: String(1 + Math.floor(rnd() * 9)),
+      office: `สำนักงานบังคับคดี${prov === "กรุงเทพมหานคร" ? "แพ่งกรุงเทพมหานคร " + (1 + Math.floor(rnd() * 6)) : "จังหวัด" + prov}`,
+      asset_type: type, deed_type: sqm ? "ห้องชุด" : "โฉนด", deed_no: String(Math.floor(10000 + rnd() * 89999)),
+      province: prov, amphoe: amp, tambon: pick(tams),
+      area_rai: Math.floor(wah / 400), area_ngan: Math.floor((wah % 400) / 100), area_wah: wah % 100, area_sqm: sqm,
+      appraisal_price: appraisal, appraisal_dept: Math.round(appraisal * (.6 + rnd() * .3) / 1000) * 1000, deposit: Math.round(appraisal * .05),
+      sale_condition: null, status: nr ? "active" : "ended", lat, lng, geo_precision: geoP,
+      next_round_no: nr?.round ?? null, next_sale_date: nr?.date ?? null, next_start_price: nr?.start_price ?? null,
+      price_ratio: ratio, unit_price: unitPay, unit_kind: sqm ? "sqm" : "wah",
+      local_median_unit: unitBase, local_comps: 4 + Math.floor(rnd() * 20),
+      s_discount: ratio != null ? clamp((1 - ratio) / .3 * 100) : null,
+      s_unit_price: clamp(50 + (1 - unitF) * 100),
+      s_location: sLoc, s_location_rent: sRent, s_location_land: sLand,
+      s_competition: clamp(rounds.filter(x => x.result).length * 25),
+      risk_penalty: Math.min(100, rp), risk_flags: flags,
+      d_main_road_m: road, d_hospital_m: Math.round(800 + (1 - urb) * 14000 * rnd()), d_school_m: Math.round(200 + (1 - urb) * 5000 * rnd()),
+      d_market_m: Math.round(250 + (1 - urb) * 7000 * rnd()), d_rail_m: Math.round(900 + (1 - urb) * 20000 * rnd()), d_industrial_m: ind,
+      n_amenity_2km: Math.round(urb * 40 * rnd() + 2), n_building_1km: Math.round(urb * 1100 * rnd() + 30),
+      watch: false, note: null, site_visit: null, max_bid: null, rounds
+    };
+    if (r.status === "active") rows.push(r);
+  }
+  return rows;
+}
+
+/* ============================== Supabase (live mode) ============================== */
+const api = {
+  h(extra = {}) {
+    const tok = S.auth?.access_token || S.cfg.anon;
+    return { apikey: S.cfg.anon, Authorization: "Bearer " + tok, ...extra };
+  },
+  async rows() {
+    const out = []; let off = 0;
+    for (;;) {
+      const r = await fetch(`${S.cfg.url}/rest/v1/v_dashboard?select=*&status=eq.active&limit=1000&offset=${off}`, { headers: api.h() });
+      if (!r.ok) throw new Error(`โหลดข้อมูลไม่สำเร็จ (${r.status})`);
+      const js = await r.json(); out.push(...js);
+      if (js.length < 1000) return out; off += 1000;
+    }
+  },
+  async saveUser(row) {
+    const r = await fetch(`${S.cfg.url}/rest/v1/asset_user?on_conflict=asset_id`, {
+      method: "POST", headers: api.h({ "Content-Type": "application/json", Prefer: "resolution=merge-duplicates,return=minimal" }),
+      body: JSON.stringify({ ...row, updated_at: new Date().toISOString() })
+    });
+    if (!r.ok) throw new Error(r.status === 401 || r.status === 403 ? "ต้องเข้าสู่ระบบด้วยอีเมลที่อยู่ใน app_admins" : `บันทึกไม่สำเร็จ (${r.status})`);
+  },
+  async otp(email) {
+    const back = location.origin + location.pathname;
+    const r = await fetch(`${S.cfg.url}/auth/v1/otp?redirect_to=${encodeURIComponent(back)}`, {
+      method: "POST", headers: { apikey: S.cfg.anon, "Content-Type": "application/json" },
+      body: JSON.stringify({ email, create_user: false })
+    });
+    if (!r.ok) throw new Error("ส่งลิงก์ไม่สำเร็จ ตรวจว่าอีเมลนี้ถูกเพิ่มเป็นผู้ใช้ใน Supabase แล้ว");
+  },
+  async refresh() {
+    if (!S.auth?.refresh_token) return;
+    if (S.auth.expires_at && S.auth.expires_at * 1000 > Date.now() + 60000) return;
+    const r = await fetch(`${S.cfg.url}/auth/v1/token?grant_type=refresh_token`, {
+      method: "POST", headers: { apikey: S.cfg.anon, "Content-Type": "application/json" },
+      body: JSON.stringify({ refresh_token: S.auth.refresh_token })
+    });
+    if (r.ok) { const js = await r.json(); S.auth = { access_token: js.access_token, refresh_token: js.refresh_token, expires_at: js.expires_at, email: js.user?.email }; }
+    else S.auth = null;
+    store(false, { auth: S.auth });
+  }
+};
+
+function readAuthHash() {
+  if (!location.hash.includes("access_token=")) return;
+  const p = new URLSearchParams(location.hash.slice(1));
+  let email = null;
+  try { email = JSON.parse(atob(p.get("access_token").split(".")[1].replace(/-/g, "+").replace(/_/g, "/"))).email; } catch (e) {}
+  S.auth = { access_token: p.get("access_token"), refresh_token: p.get("refresh_token"), expires_at: Math.floor(Date.now() / 1000) + Number(p.get("expires_in") || 3600), email };
+  store(false, { auth: S.auth });
+  history.replaceState(null, "", location.pathname);
+}
+
+function renderLogin() {
+  const el = $("login");
+  if (S.mode === "demo") { el.innerHTML = ""; return; }
+  if (S.auth) {
+    el.innerHTML = `<span class="hint">${esc(S.auth.email || "เข้าสู่ระบบแล้ว")}</span><button class="btn" id="logout">ออกจากระบบ</button>`;
+    $("logout").onclick = () => { S.auth = null; store(false, { auth: null }); renderLogin(); reload(); };
+  } else {
+    el.innerHTML = `<input id="email" type="email" placeholder="อีเมล (สำหรับบันทึกโน้ต)" aria-label="อีเมล"><button class="btn" id="otp">ส่งลิงก์เข้าสู่ระบบ</button>`;
+    $("otp").onclick = async () => {
+      try { await api.otp($("email").value.trim()); toast("ส่งลิงก์ไปที่อีเมลแล้ว เปิดลิงก์จากเครื่องนี้"); } catch (e) { toast(e.message); }
+    };
+  }
+}
+
+/* ============================== ตัวกรอง/การแสดงผล ============================== */
+const COLS = [
+  { key: "score", label: "คะแนน", r: true },
+  { key: "where", label: "ทำเล" },
+  { key: "asset_type", label: "ประเภท" },
+  { key: "area", label: "เนื้อที่", r: true },
+  { key: "next_start_price", label: "ราคาเริ่มนัดถัดไป", r: true },
+  { key: "discount", label: "ลดจากประเมิน", r: true },
+  { key: "unit_price", label: "ราคา/หน่วย", r: true },
+  { key: "next_sale_date", label: "นัดถัดไป" },
+  { key: "flags", label: "หมายเหตุ" }
+];
+function areaText(r) {
+  if (r.area_sqm && !(r.area_rai || r.area_ngan || r.area_wah)) return `${fmt(r.area_sqm, 1)} ตร.ม.`;
+  return `${r.area_rai || 0}-${r.area_ngan || 0}-${fmt(r.area_wah || 0, 1)}`;
+}
+const areaVal = (r) => r.area_sqm && !(r.area_rai || r.area_ngan || r.area_wah) ? r.area_sqm / 4 : (r.area_rai || 0) * 400 + (r.area_ngan || 0) * 100 + (r.area_wah || 0);
+
+function fill(sel, vals, keep) {
+  const el = $(sel), cur = el.value, first = el.options[0].outerHTML;
+  el.innerHTML = first + [...new Set(vals)].filter(Boolean).sort((a, b) => a.localeCompare(b, "th")).map(v => `<option>${esc(v)}</option>`).join("");
+  if (keep && [...el.options].some(o => o.value === cur)) el.value = cur;
+}
+
+function apply() {
+  const p = activePreset(), rw = S.P.risk_weight;
+  for (const r of S.rows) r.score = combine(r, p, rw);
+  const q = $("q").value.trim().toLowerCase(), prov = $("fProv").value, amp = $("fAmp").value, type = $("fType").value;
+  const max = Number(String($("fMax").value).replace(/[^\d.]/g, "")) || 0;
+  const minS = Number($("fScore").value), minR = Number($("fRound").value), days = Number($("fDays").value);
+  const noRisk = $("fNoRisk").checked, watch = $("fWatch").checked;
+  $("fScoreV").textContent = minS;
+  S.view = S.rows.filter(r => {
+    if (prov && r.province !== prov) return false;
+    if (amp && r.amphoe !== amp) return false;
+    if (type && r.asset_type !== type) return false;
+    if (max && (r.next_start_price ?? Infinity) > max) return false;
+    if (r.score < minS) return false;
+    if (minR && (r.next_round_no || 0) < minR) return false;
+    if (days) { const d = dayDiff(r.next_sale_date); if (d == null || d < 0 || d > days) return false; }
+    if (noRisk && (r.risk_penalty || 0) >= 30) return false;
+    if (watch && !r.watch) return false;
+    if (q && ![r.tambon, r.amphoe, r.province, r.case_no, r.deed_no, r.office].join(" ").toLowerCase().includes(q)) return false;
+    return true;
+  });
+  const k = S.sort.key, dir = S.sort.dir;
+  const val = (r) => k === "score" ? r.score : k === "where" ? `${r.province}${r.amphoe}${r.tambon}` : k === "area" ? areaVal(r)
+    : k === "discount" ? (r.price_ratio == null ? -1 : 1 - r.price_ratio) : k === "flags" ? (r.risk_penalty || 0) : r[k];
+  S.view.sort((a, b) => { const x = val(a), y = val(b); if (x == null) return 1; if (y == null) return -1; return (x > y ? 1 : x < y ? -1 : 0) * dir; });
+  render();
+  store(false, { preset: S.preset, custom: S.custom, filters: { prov, amp, type, max: $("fMax").value, minS, minR, days, noRisk, watch } });
+}
+
+function render() {
+  // KPI
+  const v = S.view, hi = v.filter(r => r.score >= 70).length;
+  const soon = v.filter(r => { const d = dayDiff(r.next_sale_date); return d != null && d >= 0 && d <= 7; }).length;
+  const r4 = v.filter(r => (r.next_round_no || 0) >= 4).length;
+  const medDisc = (() => { const a = v.map(r => r.price_ratio).filter(x => x != null).sort((a, b) => a - b); return a.length ? (1 - a[Math.floor(a.length / 2)]) * 100 : null; })();
+  $("kpis").innerHTML = [
+    ["ทรัพย์ที่ผ่านตัวกรอง", fmt(v.length), `จากทั้งหมด ${fmt(S.rows.length)} รายการ`],
+    ["คะแนน 70 ขึ้นไป", fmt(hi), `ตามเป้าหมาย “${S.P.presets[S.preset].label}”${S.custom ? " (ปรับเอง)" : ""}`],
+    ["ขายภายใน 7 วัน", fmt(soon), "ต้องวางหลักประกันในวันขาย"],
+    ["ราคาลดถึง 70% แล้ว", fmt(r4), `ส่วนลดกลาง ${medDisc == null ? "–" : fmt(medDisc) + "%"}`]
+  ].map(([s, b, e]) => `<div class="kpi"><small>${s}</small><b>${b}</b><em>${esc(e)}</em></div>`).join("");
+
+  // table
+  $("thead").innerHTML = COLS.map(c => `<th class="${c.r ? "r" : ""}" data-k="${c.key}" ${S.sort.key === c.key ? `aria-sort="${S.sort.dir < 0 ? "descending" : "ascending"}"` : ""} tabindex="0">${c.label}</th>`).join("");
+  $("tbody").innerHTML = v.slice(0, 500).map(r => {
+    const d = dayDiff(r.next_sale_date);
+    const flags = (r.risk_flags || []).filter(f => f !== "ยังไม่มีข้อมูลทำเล");
+    const disc = r.price_ratio == null ? "–" : fmt((1 - r.price_ratio) * 100) + "%";
+    const unit = r.unit_price ? `${fmt(r.unit_price)}<small class="hint">/${r.unit_kind === "sqm" ? "ตร.ม." : "วา"}</small>` : "–";
+    return `<tr data-id="${esc(r.id)}" class="${S.sel === r.id ? "sel" : ""}">
+      <td class="r"><span class="score" style="background:${scoreColor(r.score)}">${fmt(r.score)}</span></td>
+      <td><div class="where"><span>${esc(r.tambon || "–")} · ${esc(r.amphoe || "")}</span><small>${esc(r.province || "")}${r.watch ? " · ★ ติดตาม" : ""}</small></div></td>
+      <td>${esc(r.asset_type || "–")}</td>
+      <td class="r num">${areaText(r)}</td>
+      <td class="r num">${fmt(r.next_start_price)}</td>
+      <td class="r num">${disc}</td>
+      <td class="r num">${unit}</td>
+      <td><span class="num">${thDate(r.next_sale_date)}</span> <span class="pill ${d != null && d <= 7 ? "warn" : ""}">นัด ${r.next_round_no ?? "–"}${d != null ? ` · ${d === 0 ? "วันนี้" : d + " วัน"}` : ""}</span></td>
+      <td>${flags.length ? flags.slice(0, 2).map(f => `<span class="pill seal">${esc(f)}</span>`).join(" ") : r.geo_precision === "tambon" ? '<span class="pill">พิกัดระดับตำบล</span>' : ""}</td>
+    </tr>`;
+  }).join("");
+  $("empty").hidden = v.length > 0;
+  $("tblHint").textContent = v.length > 500 ? "แสดง 500 อันดับแรก" : "คลิกแถวเพื่อดูรายละเอียด";
+  document.querySelectorAll("#thead th").forEach(th => {
+    const go = () => { const k = th.dataset.k; S.sort = { key: k, dir: S.sort.key === k ? -S.sort.dir : (k === "where" || k === "next_sale_date" ? 1 : -1) }; apply(); };
+    th.onclick = go; th.onkeydown = (e) => { if (e.key === "Enter") go(); };
+  });
+  document.querySelectorAll("#tbody tr").forEach(tr => tr.onclick = () => openDetail(tr.dataset.id));
+  renderMap();
+}
+
+/* ============================== แผนที่ ============================== */
+function initMap() {
+  if (!window.L) { $("map").innerHTML = '<div class="empty">โหลดแผนที่ไม่ได้</div>'; return; }
+  S.map = L.map("map", { zoomControl: true, attributionControl: true }).setView([13.5, 100.4], 8);
+  if (S.mode === "live") {
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 18, attribution: "© OpenStreetMap" }).addTo(S.map);
+  } else {
+    $("mapNote").hidden = false; $("mapNote").textContent = "แผนที่ฐานจะแสดงเมื่อเปิดบน GitHub Pages";
+  }
+  S.layer = L.layerGroup().addTo(S.map);
+}
+let fitted = false;
+function renderMap() {
+  if (!S.map) return;
+  S.layer.clearLayers(); S.markers = {};
+  const pts = [];
+  for (const r of S.view) {
+    if (r.lat == null) continue;
+    const m = L.circleMarker([r.lat, r.lng], {
+      radius: r.score >= 70 ? 8 : 6, weight: S.sel === r.id ? 3 : 1, color: S.sel === r.id ? getCss("--ink") : getCss("--surface"),
+      fillColor: getCss(r.score >= 70 ? "--s-hi" : r.score >= 50 ? "--s-mid" : "--s-lo"), fillOpacity: .9,
+      dashArray: r.geo_precision === "tambon" || r.geo_precision === "amphoe" ? "2 3" : null
+    }).bindTooltip(`${fmt(r.score)} · ${esc(r.asset_type)} · ${esc(r.tambon || r.amphoe)} · ${fmt(r.next_start_price)} ฿`);
+    m.on("click", () => openDetail(r.id));
+    m.addTo(S.layer); S.markers[r.id] = m; pts.push([r.lat, r.lng]);
+  }
+  if (!fitted && pts.length) { S.map.fitBounds(pts, { padding: [24, 24], maxZoom: 12 }); fitted = true; }
+}
+const getCss = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+
+/* ============================== รายละเอียด ============================== */
+function costCalc(r, i) {
+  const bid = i.bid || 0;
+  const base = r.appraisal_dept || r.appraisal_price || bid;
+  const transfer = base * (i.feePct / 100);
+  const other = bid * (i.taxPct / 100);
+  const total = bid + transfer + other + (i.reno || 0) + (i.misc || 0);
+  const profit = i.sell ? i.sell - total : null;
+  const yieldPct = i.rent ? (i.rent * 12) / total * 100 : null;
+  return { transfer, other, total, profit, profitPct: profit != null ? profit / total * 100 : null, yieldPct };
+}
+
+function openDetail(id) {
+  const r = S.rows.find(x => x.id === id); if (!r) return;
+  S.sel = id;
+  if (location.hash !== "#" + id) history.replaceState(null, "", "#" + id);
+  const p = activePreset(), rw = S.P.risk_weight;
+  const parts = [["discount", r.s_discount], ["unit_price", r.s_unit_price], ["location", r[p.location_key]], ["competition", r.s_competition]];
+  const rounds = (r.rounds || []).slice().sort((a, b) => a.round - b.round);
+  const nxt = r.next_round_no;
+  const maxP = Math.max(...rounds.map(x => x.start_price || 0), r.appraisal_price || 0) || 1;
+  const dist = [["ถนนสายหลัก", r.d_main_road_m], ["ตลาด/ห้าง", r.d_market_m], ["โรงเรียน", r.d_school_m], ["โรงพยาบาล", r.d_hospital_m], ["สถานีรถไฟ/รถไฟฟ้า", r.d_rail_m], ["นิคม/เขตอุตสาหกรรม", r.d_industrial_m]];
+  const km = (m) => m == null ? "–" : m < 1000 ? `${fmt(m)} ม.` : `${fmt(m / 1000, 1)} กม.`;
+  const gmaps = r.lat != null ? `https://www.google.com/maps/search/?api=1&query=${r.lat},${r.lng}` : null;
+  const editable = S.mode === "demo" || !!S.auth;
+  const flags = r.risk_flags || [];
+
+  $("drawer").innerHTML = `
+    <div class="d-head">
+      <div><span class="score" style="background:${scoreColor(r.score)}">${fmt(r.score)}</span></div>
+      <div><h3>${esc(r.asset_type || "ทรัพย์")} · ${esc(r.tambon || "")} ${esc(r.amphoe || "")}</h3>
+        <p>${esc(r.province || "")} · คดี ${esc(r.case_no || "–")} ลำดับ ${esc(r.lot_no || "–")}</p></div>
+      <button class="btn d-close" id="dClose" aria-label="ปิด">ปิด</button>
+    </div>
+
+    <div class="d-sec facts">
+      <div><small>ราคาเริ่มนัดถัดไป (นัด ${nxt ?? "–"})</small><b class="num">${baht(r.next_start_price)}</b></div>
+      <div><small>ราคาประเมินเจ้าพนักงาน</small><b class="num">${baht(r.appraisal_price)}</b></div>
+      <div><small>ราคาประเมินกรมธนารักษ์</small><b class="num">${baht(r.appraisal_dept)}</b></div>
+      <div><small>หลักประกัน</small><b class="num">${baht(r.deposit)}</b></div>
+      <div><small>เนื้อที่</small><b class="num">${areaText(r)} ${r.area_sqm && !(r.area_rai || r.area_ngan || r.area_wah) ? "" : "ไร่-งาน-วา"}</b></div>
+      <div><small>ราคาต่อหน่วย (นัดถัดไป / ค่ากลางพื้นที่)</small><b class="num">${fmt(r.unit_price)} / ${fmt(r.local_median_unit)}</b></div>
+      <div><small>เอกสารสิทธิ์</small><b>${esc(r.deed_type || "–")} ${esc(r.deed_no || "")}</b></div>
+      <div><small>สำนักงาน</small><b>${esc(r.office || "–")}</b></div>
+    </div>
+
+    ${flags.length ? `<div class="d-sec"><h4>สัญญาณที่ต้องตรวจ</h4><div class="links">${flags.map(f => `<span class="pill ${f === "ยังไม่มีข้อมูลทำเล" ? "" : "seal"}">${esc(f)}</span>`).join("")}</div>
+      ${r.sale_condition ? `<p class="hint" style="margin-top:8px">${esc(r.sale_condition).slice(0, 600)}</p>` : ""}</div>` : ""}
+
+    <div class="d-sec"><h4>ที่มาของคะแนน (${esc(S.P.presets[S.preset].label)})</h4>
+      <div class="bars">${parts.map(([k, v]) => `<div class="bar-row"><span>${W_LABEL[k]}<br><small class="hint">น้ำหนัก ${fmt(p.w[k] * 100)}%</small></span>
+        <div class="bar-track"><div class="bar-fill ${v == null ? "na" : ""}" style="width:${v == null ? 100 : v}%"></div></div>
+        <span class="num r">${v == null ? "ไม่มี" : fmt(v)}</span></div>`).join("")}
+        <div class="bar-row"><span>หักความเสี่ยง</span><div class="bar-track"><div class="bar-fill" style="width:${r.risk_penalty || 0}%;background:var(--seal)"></div></div>
+        <span class="num r">−${fmt((r.risk_penalty || 0) * rw)}</span></div>
+      </div>
+      <p class="hint">ช่องที่ไม่มีข้อมูลนับเป็น 50 (กลางๆ) เพื่อไม่ให้ทรัพย์ข้อมูลน้อยถูกดันขึ้นหรือกดลง</p>
+    </div>
+
+    <div class="d-sec"><h4>ราคาเริ่มต้นแต่ละนัด</h4>
+      <div class="ladder">${rounds.map(x => {
+        const past = x.round < (nxt || 99) || !!x.result;
+        const cls = x.round === nxt ? "next" : past ? "past" : "";
+        return `<div class="rung ${cls}"><span>นัด ${x.round}<br><small class="hint num">${thDate(x.date)}</small></span>
+          <div class="track"><div class="fill" style="width:${(x.start_price || 0) / maxP * 100}%"></div><span class="lab num">${fmt(pct(x.round) * 100)}% · ${fmt(x.start_price)}</span></div>
+          <span class="${x.result === "ขายได้" ? "pill ok" : x.result ? "pill" : x.round === nxt ? "pill warn" : "hint"}">${esc(x.result || (x.round === nxt ? "นัดถัดไป" : "รอ"))}</span></div>`;
+      }).join("") || '<p class="hint">ยังไม่มีข้อมูลนัดขาย</p>'}</div>
+    </div>
+
+    <div class="d-sec"><h4>ทำเล ${r.geo_precision === "tambon" ? '<span class="pill">พิกัดระดับตำบล</span>' : r.geo_precision === "manual" ? '<span class="pill ok">พิกัดแปลงจริง</span>' : ""}</h4>
+      <div class="facts">${dist.map(([l, m]) => `<div><small>${l}</small><b class="num">${km(m)}</b></div>`).join("")}
+        <div><small>สิ่งอำนวยความสะดวกในรัศมี 2 กม.</small><b class="num">${fmt(r.n_amenity_2km)}</b></div>
+        <div><small>อาคารในรัศมี 1 กม.</small><b class="num">${fmt(r.n_building_1km)}</b></div></div>
+      ${r.geo_precision === "tambon" ? '<p class="hint">ระยะคิดจากกลางตำบล หาเลขโฉนดใน LandsMaps แล้วใส่พิกัดจริงด้านล่าง ระบบจะคำนวณทำเลใหม่รอบถัดไป</p>' : ""}
+    </div>
+
+    <div class="d-sec"><h4>คำนวณต้นทุนและผลตอบแทน</h4>
+      <div class="calc">
+        <label for="cBid">ราคาที่จะสู้ (บาท)<input id="cBid" class="num" inputmode="numeric" value="${Math.round(r.max_bid || r.next_start_price || 0)}"></label>
+        <label for="cFee">ค่าธรรมเนียมโอน (% ราคาประเมินราชการ)<input id="cFee" class="num" inputmode="decimal" value="2"></label>
+        <label for="cTax">ภาษี/อากรอื่นที่ผู้ซื้อรับ (% ราคาซื้อ)<input id="cTax" class="num" inputmode="decimal" value="0"></label>
+        <label for="cReno">ค่ารีโนเวท/ปรับปรุง<input id="cReno" class="num" inputmode="numeric" value="0"></label>
+        <label for="cMisc">ค่าใช้จ่ายอื่น (ขนย้าย ค่าส่วนกลางค้าง)<input id="cMisc" class="num" inputmode="numeric" value="0"></label>
+        <label for="cSell">ราคาขายที่คาด<input id="cSell" class="num" inputmode="numeric" value=""></label>
+        <label for="cRent">ค่าเช่าที่คาด / เดือน<input id="cRent" class="num" inputmode="numeric" value=""></label>
+      </div>
+      <div class="calc-out" id="cOut"></div>
+      <p class="hint">ค่าธรรมเนียมและภาษีจริงขึ้นกับประเภททรัพย์และประกาศแต่ละรายการ ตรวจกับสำนักงานที่ดินก่อนตัดสินใจ</p>
+    </div>
+
+    <div class="d-sec"><h4>บันทึกของฉัน ${S.mode === "demo" ? '<span class="pill">เก็บในเบราว์เซอร์นี้</span>' : ""}</h4>
+      ${editable ? `<div class="mine">
+        <label class="chk"><input type="checkbox" id="uWatch" ${r.watch ? "checked" : ""}> ติดตามทรัพย์นี้ (แจ้งเตือนก่อนถึงนัดและเมื่อราคาลด)</label>
+        <div class="row">
+          <select id="uVisit" aria-label="ลงพื้นที่"><option value="">ยังไม่ลงพื้นที่</option>${["ไปแล้ว-ผ่าน", "ไปแล้ว-ไม่ผ่าน"].map(o => `<option ${r.site_visit === o ? "selected" : ""}>${o}</option>`).join("")}</select>
+          <input id="uLat" class="num" placeholder="lat จาก LandsMaps" aria-label="ละติจูด" value="${r.geo_precision === "manual" ? r.lat : ""}">
+          <input id="uLng" class="num" placeholder="lng" aria-label="ลองจิจูด" value="${r.geo_precision === "manual" ? r.lng : ""}">
+        </div>
+        <textarea id="uNote" placeholder="สภาพหน้างาน ทางเข้า เพื่อนบ้าน ฯลฯ" aria-label="โน้ต">${esc(r.note || "")}</textarea>
+        <div><button class="btn primary" id="uSave">บันทึก</button></div>
+      </div>` : '<p class="hint">เข้าสู่ระบบด้วยอีเมลที่มุมขวาบนเพื่อบันทึกโน้ตและติดตามทรัพย์</p>'}
+    </div>
+
+    <div class="d-sec links">
+      ${r.source_url ? `<a href="${esc(r.source_url)}" target="_blank" rel="noopener">ประกาศต้นฉบับ</a>` : ""}
+      <a href="https://landsmaps.dol.go.th/" target="_blank" rel="noopener">LandsMaps (ค้นโฉนด ${esc(r.deed_no || "")})</a>
+      ${gmaps ? `<a href="${gmaps}" target="_blank" rel="noopener">Google Maps</a>` : ""}
+    </div>`;
+
+  const num = (id) => Number(String($(id).value).replace(/[^\d.]/g, "")) || 0;
+  const calc = () => {
+    const c = costCalc(r, { bid: num("cBid"), feePct: num("cFee"), taxPct: num("cTax"), reno: num("cReno"), misc: num("cMisc"), sell: num("cSell"), rent: num("cRent") });
+    $("cOut").innerHTML = `<div><small>ต้นทุนรวม</small><b>${fmt(c.total)}</b></div>
+      <div><small>กำไรเมื่อขาย</small><b style="color:${c.profit == null ? "inherit" : c.profit >= 0 ? "var(--accent)" : "var(--seal)"}">${c.profit == null ? "ใส่ราคาขาย" : fmt(c.profit) + ` (${fmt(c.profitPct, 1)}%)`}</b></div>
+      <div><small>ผลตอบแทนค่าเช่า/ปี</small><b>${c.yieldPct == null ? "ใส่ค่าเช่า" : fmt(c.yieldPct, 1) + "%"}</b></div>`;
+  };
+  ["cBid", "cFee", "cTax", "cReno", "cMisc", "cSell", "cRent"].forEach(i => $(i).oninput = calc); calc();
+
+  if (editable) $("uSave").onclick = async () => {
+    const lat = parseFloat($("uLat").value), lng = parseFloat($("uLng").value);
+    const row = { asset_id: r.id, watch: $("uWatch").checked, site_visit: $("uVisit").value || null, note: $("uNote").value || null,
+      manual_lat: isFinite(lat) ? lat : null, manual_lng: isFinite(lng) ? lng : null, max_bid: num("cBid") || null };
+    try {
+      if (S.mode === "live") { await api.refresh(); await api.saveUser(row); }
+      else { const o = store(true); o.user = o.user || {}; o.user[r.id] = row; store(false, { user: o.user }); }
+      Object.assign(r, { watch: row.watch, site_visit: row.site_visit, note: row.note, max_bid: row.max_bid });
+      if (row.manual_lat != null) Object.assign(r, { lat: row.manual_lat, lng: row.manual_lng, geo_precision: "manual" });
+      toast("บันทึกแล้ว"); apply();
+    } catch (e) { toast(e.message); }
+  };
+  $("dClose").onclick = closeDetail;
+  $("drawer").classList.add("open"); $("drawer").setAttribute("aria-hidden", "false"); $("scrim").hidden = false;
+  document.querySelectorAll("#tbody tr").forEach(tr => tr.classList.toggle("sel", tr.dataset.id === id));
+  renderMap();
+}
+function closeDetail() {
+  S.sel = null; $("drawer").classList.remove("open"); $("drawer").setAttribute("aria-hidden", "true"); $("scrim").hidden = true;
+  history.replaceState(null, "", location.pathname); render();
+}
+
+/* ============================== preset / น้ำหนัก ============================== */
+function renderPresets() {
+  $("presets").innerHTML = Object.entries(S.P.presets).map(([k, p]) => `<button aria-pressed="${k === S.preset}" data-k="${k}">${esc(p.label)}</button>`).join("");
+  $("presets").querySelectorAll("button").forEach(b => b.onclick = () => { S.preset = b.dataset.k; S.custom = null; renderPresets(); renderWeights(); apply(); if (S.sel) openDetail(S.sel); });
+}
+function renderWeights() {
+  const w = activePreset().w;
+  $("weights").innerHTML = Object.keys(W_LABEL).map(k => `<label for="w_${k}">${W_LABEL[k]} <span class="num">${fmt(w[k] * 100)}%</span>
+    <input type="range" id="w_${k}" min="0" max="60" step="5" value="${Math.round(w[k] * 100)}"></label>`).join("") +
+    `<div style="display:flex;align-items:end"><button class="btn" id="wReset">กลับค่าเริ่มต้น</button></div>`;
+  Object.keys(W_LABEL).forEach(k => $("w_" + k).oninput = (e) => {
+    S.custom = { ...activePreset().w, [k]: Number(e.target.value) / 100 };
+    e.target.previousElementSibling.textContent = fmt(S.custom[k] * 100) + "%";
+    apply();
+  });
+  $("wReset").onclick = () => { S.custom = null; renderWeights(); apply(); };
+}
+
+/* ============================== เริ่มทำงาน ============================== */
+async function reload() {
+  if (S.mode === "live") {
+    try { await api.refresh(); S.rows = await api.rows(); }
+    catch (e) { toast(e.message); S.rows = []; }
+  } else {
+    S.rows = demoData();
+    const u = store(true).user || {};
+    for (const r of S.rows) if (u[r.id]) {
+      const x = u[r.id]; Object.assign(r, { watch: x.watch, site_visit: x.site_visit, note: x.note, max_bid: x.max_bid });
+      if (x.manual_lat != null) Object.assign(r, { lat: x.manual_lat, lng: x.manual_lng, geo_precision: "manual" });
+    }
+  }
+  for (const r of S.rows) if (typeof r.risk_flags === "string") { try { r.risk_flags = JSON.parse(r.risk_flags); } catch (e) { r.risk_flags = []; } }
+  fill("fProv", S.rows.map(r => r.province), true);
+  fill("fAmp", S.rows.filter(r => !$("fProv").value || r.province === $("fProv").value).map(r => r.amphoe), true);
+  fill("fType", S.rows.map(r => r.asset_type), true);
+  apply();
+}
+
+async function boot() {
+  try {
+    const r = await fetch("config.json", { cache: "no-store" });
+    if (r.ok) { const c = await r.json(); if (c.url && c.anon) { S.cfg = { url: c.url.replace(/\/$/, ""), anon: c.anon }; S.mode = "live"; } }
+  } catch (e) {}
+  try { const r = await fetch("presets.json", { cache: "no-store" }); if (r.ok) S.P = await r.json(); } catch (e) {}
+  $("demoBar").hidden = S.mode !== "demo";
+
+  const saved = store(true);
+  if (S.mode === "live") { S.auth = saved.auth || null; readAuthHash(); }
+  if (saved.preset && S.P.presets[saved.preset]) S.preset = saved.preset;
+  if (saved.custom) S.custom = saved.custom;
+  const f = saved.filters || {};
+  if (f.max) $("fMax").value = f.max; if (f.minS) $("fScore").value = f.minS; if (f.minR) $("fRound").value = f.minR;
+  if (f.days) $("fDays").value = f.days; $("fNoRisk").checked = !!f.noRisk; $("fWatch").checked = !!f.watch;
+
+  renderPresets(); renderWeights(); renderLogin(); initMap();
+  $("tuneBtn").onclick = () => { const h = $("weights").hidden; $("weights").hidden = !h; $("tuneBtn").setAttribute("aria-expanded", String(h)); };
+  ["q", "fMax"].forEach(i => $(i).oninput = apply);
+  ["fType", "fScore", "fRound", "fDays", "fNoRisk", "fWatch", "fAmp"].forEach(i => $(i).onchange = apply);
+  $("fScore").oninput = apply;
+  $("fProv").onchange = () => { fill("fAmp", S.rows.filter(r => !$("fProv").value || r.province === $("fProv").value).map(r => r.amphoe), false); $("fAmp").value = ""; fitted = false; apply(); };
+  $("fReset").onclick = () => { ["q", "fMax"].forEach(i => $(i).value = ""); ["fProv", "fAmp", "fType"].forEach(i => $(i).value = ""); $("fScore").value = 0; $("fRound").value = 0; $("fDays").value = 0; $("fNoRisk").checked = $("fWatch").checked = false; fitted = false; apply(); };
+  $("scrim").onclick = closeDetail;
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && S.sel) closeDetail(); });
+
+  await reload();
+  if (f.prov) { $("fProv").value = f.prov; fill("fAmp", S.rows.filter(r => r.province === f.prov).map(r => r.amphoe), false); if (f.amp) $("fAmp").value = f.amp; }
+  if (f.type) $("fType").value = f.type;
+  fitted = false; apply();
+  const h = location.hash.slice(1);
+  if (h && S.rows.some(r => r.id === h)) openDetail(h);
+}
+boot();
+</script>

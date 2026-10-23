@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ติดตั้งปุ่มเก็บข้อมูล LED Radar</title>
+<style>
+  :root { --bg:#f6f4ee; --card:#fff; --ink:#1f2a28; --muted:#5d6b67; --accent:#2f7d6d; --line:#dcd8cc; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#141917; --card:#1d2422; --ink:#e7ece9; --muted:#9aa8a3; --accent:#5fb8a3; --line:#2f3a37; } }
+  body { margin:0; background:var(--bg); color:var(--ink); font:15px/1.6 Tahoma, "Noto Sans Thai", sans-serif; }
+  main { max-width:640px; margin:0 auto; padding:32px 16px 64px; }
+  h1 { font-size:22px; margin:0 0 4px; } p.sub { color:var(--muted); margin:0 0 24px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:20px; margin-bottom:16px; }
+  label { display:block; font-weight:bold; margin:12px 0 4px; }
+  input { width:100%; box-sizing:border-box; padding:10px 12px; border:1px solid var(--line); border-radius:8px;
+          background:var(--bg); color:var(--ink); font:14px monospace; }
+  button { margin-top:16px; padding:10px 18px; border:0; border-radius:8px; background:var(--accent); color:#fff; font:bold 15px Tahoma; cursor:pointer; }
+  #out { display:none; } #bm { display:inline-block; padding:12px 20px; border-radius:10px; background:var(--accent); color:#fff;
+       text-decoration:none; font-weight:bold; margin:8px 0; cursor:grab; }
+  ol { padding-left:20px; } .muted { color:var(--muted); font-size:13px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>ติดตั้งปุ่ม “เก็บทรัพย์ LED”</h1>
+  <p class="sub">กรอกค่าจาก Supabase แล้วลากปุ่มไปวางบนแถบบุ๊กมาร์กของ Chrome · ค่าเหล่านี้อยู่ในเครื่องคุณเท่านั้น หน้านี้ไม่ได้ส่งไปไหน</p>
+
+  <div class="card">
+    <label for="u">Supabase Project URL</label>
+    <input id="u" placeholder="https://xxxx.supabase.co">
+    <label for="k">anon public key</label>
+    <input id="k" placeholder="eyJhbGciOi...">
+    <label for="t">capture_token (ที่ตั้งไว้ใน app_secrets)</label>
+    <input id="t" placeholder="รหัสยาวๆ ที่คุณตั้งเอง">
+    <button id="go">สร้างปุ่ม</button>
+  </div>
+
+  <div class="card" id="out">
+    <p>ลากปุ่มนี้ไปวางบนแถบบุ๊กมาร์ก (กด Ctrl+Shift+B ถ้าแถบไม่แสดง):</p>
+    <a id="bm" href="#">📥 เก็บทรัพย์ LED</a>
+    <ol>
+      <li>เปิดหน้าค้นหาทรัพย์ของกรมบังคับคดี ค้นตามจังหวัด/ประเภทตามปกติ</li>
+      <li>เมื่อผลค้นหาขึ้น กดปุ่มนี้หนึ่งครั้งต่อหนึ่งหน้า (หน้ารายละเอียดทรัพย์ก็กดได้ ข้อมูลจะละเอียดกว่า)</li>
+      <li>มุมขวาล่างขึ้น “เก็บแล้ว ✓” = เสร็จ · ถ้าขึ้นสีแดง ระบบจะดาวน์โหลดไฟล์ .json ไว้ให้ นำเข้าด้วย <code>python -m worker.import_json</code></li>
+    </ol>
+    <p class="muted">ปุ่มนี้อ่านเฉพาะหน้าที่คุณเปิดอยู่ตอนกด ไม่เปิดหน้าอื่นเองและไม่ทำงานเบื้องหลัง</p>
+  </div>
+</main>
+<script id="src" type="text/plain">__CAPTURE_SOURCE__</script>
+<script>
+  var KEY = 'ledradar-install';
+  try { var s = JSON.parse(localStorage.getItem(KEY) || '{}'); u.value = s.u || ''; k.value = s.k || ''; } catch (e) {}
+  document.getElementById('go').onclick = function () {
+    var cfg = { url: u.value.trim(), key: k.value.trim(), token: t.value.trim() };
+    if (!/^https:\/\/.+/.test(cfg.url) || !cfg.key || !cfg.token) { alert('กรอกให้ครบทั้ง 3 ช่อง'); return; }
+    try { localStorage.setItem(KEY, JSON.stringify({ u: cfg.url, k: cfg.key })); } catch (e) {}
+    var code = document.getElementById('src').textContent
+      .replace('__CFG__', JSON.stringify(cfg))
+      .replace(/\/\*[\s\S]*?\*\//g, '')         // ตัดคอมเมนต์บล็อก
+      .replace(/^\s*\/\/.*$/gm, '')              // ตัดคอมเมนต์บรรทัด
+      .replace(/\n\s*/g, '\n');
+    document.getElementById('bm').href = 'javascript:' + encodeURIComponent(code);
+    document.getElementById('out').style.display = 'block';
+  };
+</script>
+</body>
+</html>

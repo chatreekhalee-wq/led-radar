@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ติดตั้งปุ่มเก็บข้อมูล LED Radar</title>
+<style>
+  :root { --bg:#f6f4ee; --card:#fff; --ink:#1f2a28; --muted:#5d6b67; --accent:#2f7d6d; --line:#dcd8cc; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#141917; --card:#1d2422; --ink:#e7ece9; --muted:#9aa8a3; --accent:#5fb8a3; --line:#2f3a37; } }
+  body { margin:0; background:var(--bg); color:var(--ink); font:15px/1.6 Tahoma, "Noto Sans Thai", sans-serif; }
+  main { max-width:640px; margin:0 auto; padding:32px 16px 64px; }
+  h1 { font-size:22px; margin:0 0 4px; } p.sub { color:var(--muted); margin:0 0 24px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:20px; margin-bottom:16px; }
+  label { display:block; font-weight:bold; margin:12px 0 4px; }
+  input { width:100%; box-sizing:border-box; padding:10px 12px; border:1px solid var(--line); border-radius:8px;
+          background:var(--bg); color:var(--ink); font:14px monospace; }
+  button { margin-top:16px; padding:10px 18px; border:0; border-radius:8px; background:var(--accent); color:#fff; font:bold 15px Tahoma; cursor:pointer; }
+  #out { display:none; } #bm { display:inline-block; padding:12px 20px; border-radius:10px; background:var(--accent); color:#fff;
+       text-decoration:none; font-weight:bold; margin:8px 0; cursor:grab; }
+  ol { padding-left:20px; } .muted { color:var(--muted); font-size:13px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>ติดตั้งปุ่ม “เก็บทรัพย์ LED”</h1>
+  <p class="sub">กรอกค่าจาก Supabase แล้วลากปุ่มไปวางบนแถบบุ๊กมาร์กของ Chrome · ค่าเหล่านี้อยู่ในเครื่องคุณเท่านั้น หน้านี้ไม่ได้ส่งไปไหน</p>
+
+  <div class="card">
+    <label for="u">Supabase Project URL</label>
+    <input id="u" placeholder="https://xxxx.supabase.co">
+    <label for="k">anon public key</label>
+    <input id="k" placeholder="eyJhbGciOi...">
+    <label for="t">capture_token (ที่ตั้งไว้ใน app_secrets)</label>
+    <input id="t" placeholder="รหัสยาวๆ ที่คุณตั้งเอง">
+    <button id="go">สร้างปุ่ม</button>
+  </div>
+
+  <div class="card" id="out">
+    <p>ลากปุ่มนี้ไปวางบนแถบบุ๊กมาร์ก (กด Ctrl+Shift+B ถ้าแถบไม่แสดง):</p>
+    <a id="bm" href="#">📥 เก็บทรัพย์ LED</a>
+    <ol>
+      <li>เปิดหน้าค้นหาทรัพย์ของกรมบังคับคดี ค้นตามจังหวัด/ประเภทตามปกติ</li>
+      <li>เมื่อผลค้นหาขึ้น กดปุ่มนี้หนึ่งครั้งต่อหนึ่งหน้า (หน้ารายละเอียดทรัพย์ก็กดได้ ข้อมูลจะละเอียดกว่า)</li>
+      <li>มุมขวาล่างขึ้น “เก็บแล้ว ✓” = เสร็จ · ถ้าขึ้นสีแดง ระบบจะดาวน์โหลดไฟล์ .json ไว้ให้ นำเข้าด้วย <code>python -m worker.import_json</code></li>
+    </ol>
+    <p class="muted">ปุ่มนี้อ่านเฉพาะหน้าที่คุณเปิดอยู่ตอนกด ไม่เปิดหน้าอื่นเองและไม่ทำงานเบื้องหลัง</p>
+  </div>
+</main>
+<script id="src" type="text/plain">/* LED Radar — ปุ่มเก็บข้อมูล (bookmarklet source)
+ * ทำงานเฉพาะตอนผู้ใช้กดเอง บนหน้าที่ผู้ใช้เปิดอยู่ ไม่ไล่เปิดหน้าอื่น ไม่ crawl
+ * __CFG__ จะถูกแทนด้วย {url, key, token} จากหน้า install.html
+ */
+(function () {
+  var CFG = __CFG__;
+  var MAX_TEXT = 1500000;
+
+  function toast(msg, ok) {
+    var d = document.createElement('div');
+    d.textContent = msg;
+    d.style.cssText = 'position:fixed;z-index:2147483647;right:16px;bottom:16px;max-width:360px;' +
+      'padding:12px 16px;border-radius:10px;font:14px/1.5 Tahoma,sans-serif;color:#fff;' +
+      'box-shadow:0 6px 24px rgba(0,0,0,.25);background:' + (ok ? '#2f7d6d' : '#b4452f');
+    document.body.appendChild(d);
+    setTimeout(function () { d.remove(); }, 6000);
+  }
+
+  // รวม document หลัก + iframe/frame ที่อยู่โดเมนเดียวกัน (เว็บราชการหลายแห่งยังใช้ frame)
+  function docs() {
+    var out = [document];
+    var frames = document.querySelectorAll('iframe,frame');
+    for (var i = 0; i < frames.length; i++) {
+      try { if (frames[i].contentDocument && frames[i].contentDocument.body) out.push(frames[i].contentDocument); }
+      catch (e) { /* ต่างโดเมน ข้าม */ }
+    }
+    return out;
+  }
+
+  var ds = docs(), tables = [], text = [], links = [], imgs = [];
+  ds.forEach(function (d) {
+    d.querySelectorAll('table').forEach(function (t) {
+      // เก็บเฉพาะตารางชั้นนอกสุดที่มีข้อความ เพื่อไม่ซ้ำตารางซ้อน
+      if (!t.parentElement || !t.parentElement.closest('table')) {
+        if ((t.innerText || '').trim().length > 20) tables.push(t.outerHTML);
+      }
+    });
+    text.push(d.body ? d.body.innerText : '');
+    d.querySelectorAll('a[href]').forEach(function (a) {
+      if (links.length < 3000) links.push({ text: (a.innerText || '').trim().slice(0, 200), href: a.href });
+    });
+    d.querySelectorAll('img[src]').forEach(function (im) {
+      if (imgs.length < 60 && im.naturalWidth > 120) imgs.push(im.src);
+    });
+  });
+
+  var pageText = text.join('\n\n').slice(0, MAX_TEXT);
+  var tablesHtml = tables.join('\n<!--table-->\n').slice(0, MAX_TEXT);
+  var kind = /ราคาประเมิน/.test(pageText) && /นัดที่\s*1/.test(pageText) && tables.length < 8 ? 'detail'
+           : (tables.length ? 'list' : 'unknown');
+
+  var payload = {
+    p_token: CFG.token, p_url: location.href, p_title: document.title, p_kind: kind,
+    p_tables_html: tablesHtml, p_page_text: pageText, p_links: links, p_images: imgs
+  };
+
+  function downloadFallback(reason) {
+    var blob = new Blob([JSON.stringify(payload)], { type: 'application/json' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'led-capture-' + Date.now() + '.json';
+    document.body.appendChild(a); a.click(); a.remove();
+    toast('ส่งตรงไม่ได้ (' + reason + ') — ดาวน์โหลดไฟล์ไว้แล้ว นำเข้าทีหลังได้', false);
+  }
+
+  try {
+    fetch(CFG.url.replace(/\/$/, '') + '/rest/v1/rpc/submit_capture', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', apikey: CFG.key, Authorization: 'Bearer ' + CFG.key },
+      body: JSON.stringify(payload)
+    }).then(function (r) {
+      if (!r.ok) return r.text().then(function (t) { throw new Error(r.status + ' ' + t.slice(0, 120)); });
+      return r.json();
+    }).then(function (id) {
+      toast('เก็บแล้ว ✓ ' + tables.length + ' ตาราง (#' + id + ') — ระบบจะคิดคะแนนรอบถัดไป', true);
+    }).catch(function (e) { downloadFallback(String(e.message || e)); });
+  } catch (e) { downloadFallback('CSP'); }
+})();
+</script>
+<script>
+  var KEY = 'ledradar-install';
+  try { var s = JSON.parse(localStorage.getItem(KEY) || '{}'); u.value = s.u || ''; k.value = s.k || ''; } catch (e) {}
+  document.getElementById('go').onclick = function () {
+    var cfg = { url: u.value.trim(), key: k.value.trim(), token: t.value.trim() };
+    if (!/^https:\/\/.+/.test(cfg.url) || !cfg.key || !cfg.token) { alert('กรอกให้ครบทั้ง 3 ช่อง'); return; }
+    try { localStorage.setItem(KEY, JSON.stringify({ u: cfg.url, k: cfg.key })); } catch (e) {}
+    var code = document.getElementById('src').textContent
+      .replace('__CFG__', JSON.stringify(cfg))
+      .replace(/\/\*[\s\S]*?\*\//g, '')         // ตัดคอมเมนต์บล็อก
+      .replace(/^\s*\/\/.*$/gm, '')              // ตัดคอมเมนต์บรรทัด
+      .replace(/\n\s*/g, '\n');
+    document.getElementById('bm').href = 'javascript:' + encodeURIComponent(code);
+    document.getElementById('out').style.display = 'block';
+  };
+</script>
+</body>
+</html>
