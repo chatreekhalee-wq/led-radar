@@ -37,7 +37,7 @@ def test_parse_list():
     assert a["case_no"] == "ผบ.4820/2567"
     assert a["province"] == "ชลบุรี" and a["amphoe"] == "ศรีราชา" and a["tambon"] == "บางพระ"
     assert a["appraisal_price"] == 1850000 and a["area_wah"] == 52.5
-    assert a["asset_type"] == "บ้านเดี่ยว"
+    assert a["asset_type"] == "ที่ดินพร้อมสิ่งปลูกสร้าง"
     assert a["source_url"] == "https://asset.led.go.th/detail?id=101"
     assert a["_rounds"][2]["result"] == "ไม่มีผู้ซื้อ"
     assert a["_rounds"][4]["sale_date"] == date(2026, 11, 14)
@@ -122,3 +122,22 @@ def test_scoring_orders_sensibly():
 def test_combine_missing_is_neutral():
     p = CFG["presets"]["flip"]
     assert combine({}, p, 0.3) == 50.0
+
+
+def test_parse_real_led_layout():
+    """โครงสร้างตารางจริงของ asset.led.go.th: หัว 2 ชั้น, ขายเป็นชุด, แถวสีแดง = ขายแล้ว/งด"""
+    cap = {"page_url": "https://asset.led.go.th/newbidreg/default.asp", "page_kind": "list",
+           "tables_html": (FX / "led_real_list.html").read_text(encoding="utf-8"), "page_text": ""}
+    items = parse_capture(cap)
+    assert len(items) == 3                       # 3 แปลงของชุด 16-1 รวมเป็น 1 รายการ
+    s16, condo, house = items
+    assert s16["case_no"] == "อ.745/2567" and s16["lot_no"] == "16 - 1"
+    assert s16["n_plots"] == 3 and s16["appraisal_price"] == 84058859
+    assert (s16["area_rai"], s16["area_ngan"], s16["area_wah"]) == (0, 1, 76.2)   # 133+31+12.2 = 176.2 วา = 1 งาน 76.2 วา
+    assert s16["_struck"] is True
+    assert s16["asset_type"] == "ที่ดินพร้อมสิ่งปลูกสร้าง"
+    assert "asset_open.asp" in s16["source_url"]
+    assert condo["asset_type"] == "ห้องชุด" and condo["_struck"] is False
+    assert condo["tambon"] == "บางนา" and condo["amphoe"] == "บางนา"
+    assert house["appraisal_price"] == 2400000 and house["area_wah"] == 25
+    assert house["province"] == "กรุงเทพมหานคร" and house["amphoe"] == "ประเวศ"
